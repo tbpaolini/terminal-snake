@@ -1,5 +1,6 @@
 #pragma once
 
+// Standard headers
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -8,6 +9,7 @@
 #include <locale.h>
 #include <signal.h>
 
+// OS headers
 #ifdef _WIN32
 #include <windows.h>
 
@@ -17,3 +19,6 @@
 #include <signal.h>
 
 #endif // _WIN_32
+
+// Application's headers
+#include "screen_elements.h"
