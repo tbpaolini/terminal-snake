@@ -21,4 +21,5 @@
 #endif // _WIN_32
 
 // Application's headers
+#include "terminal_sequences.h"
 #include "screen_elements.h"
