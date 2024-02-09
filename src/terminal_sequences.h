@@ -17,7 +17,7 @@ Example:
 
 // Control of the terminal screen
 #define ALT_SCREEN CSI "?1049h"     // Switch to the alternate terminal screen
-#define MAIN_SCREEN CSI "?1049h"    // Switch back to the main terminal screen
+#define MAIN_SCREEN CSI "?1049l"    // Switch back to the main terminal screen
 #define CLEAR_SCREEN CSI "2J"       // Erase all characters on the terminal screen
 
 // Control of the cursor
