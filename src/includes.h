@@ -23,3 +23,4 @@
 // Application's headers
 #include "terminal_sequences.h"
 #include "screen_elements.h"
+#include "game_logic.h"
