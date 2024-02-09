@@ -9,6 +9,7 @@ static void cleanup()
     SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     printf(TERM_RESET MAIN_SCREEN);
     fflush(stdout);
+    SetConsoleOutputCP(state_ptr->output_cp_old);
     SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
 }
@@ -49,6 +50,7 @@ GameState* game_init()
     #ifdef _WIN32
 
     // Make the terminal to accept Unicode characters encoded in UTF-8
+    state->output_cp_old = GetConsoleOutputCP();
     SetConsoleOutputCP(CP_UTF8);
 
     // Get the Windows' handles for the standard input and output streams

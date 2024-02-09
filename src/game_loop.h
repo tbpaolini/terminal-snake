@@ -42,6 +42,7 @@ struct GameState
     HWND window;            // terminal's window handle
     LONG window_mode;       // terminal's window settings
     LONG window_mode_old;   // original terminal's window settings
+    UINT output_cp_old;     // original code page of the terminal
     
     #else
     
