@@ -32,6 +32,7 @@ Example:
 #define TEXT_GREEN CSI "92m"
 #define TEXT_YELLOW CSI "93m"
 #define TEXT_CYAN CSI "96m"
+#define TEXT_RED CSI "31m"
 #define TEXT_GRAY CSI "37m"
 #define TEXT_WHITE CSI "97m"
 #define BG_BLACK CSI "40m"
