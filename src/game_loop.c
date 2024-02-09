@@ -8,6 +8,7 @@ static void cleanup()
 {
     SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     printf(TERM_RESET MAIN_SCREEN);
+    fflush(stdout);
     SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
 }
@@ -102,12 +103,62 @@ GameState* game_init()
         // TO DO: Exit...
     }
 
+    // Get the amount of rows and columns that are visible on the terminal window
+    CONSOLE_SCREEN_BUFFER_INFO buffer_info = {0};
+    GetConsoleScreenBufferInfo(state->output_handle, &buffer_info);
+    state->screen_size = (GameCoord){
+        buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1,
+        buffer_info.srWindow.Right - buffer_info.srWindow.Left + 1,
+    };
+
     #else // Linux
 
 
     #endif // _WIN_32
 
+    // Top left coordinates of the board
+    const GameCoord board_start = {
+        SCREEN_MARGIN + 1,
+        SCREEN_MARGIN + 1,
+    };
+
+    // Bottom right coordinates of the board
+    const GameCoord board_end = {
+        state->screen_size.row - SCREEN_MARGIN,
+        state->screen_size.col - SCREEN_MARGIN,
+    };
+
     // Switch to the alternate terminal screen.
-    // Then make its background black, its text light grey, and enable keyboard input.
-    printf(ALT_SCREEN BG_BLACK TEXT_GRAY CLEAR_SCREEN KP_APP_MODE CK_APP_MODE);
+    // Then make its background black, its text light grey, enable keyboard input, and hide the cursor.
+    printf(ALT_SCREEN BG_BLACK TEXT_GRAY CLEAR_SCREEN KP_APP_MODE CK_APP_MODE HIDE_CURSOR);
+
+    // Set the output stream to fully buffered so it is only drawn when we flush it
+    setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
+    
+    // Drawing a rectangle along the terminal's borders
+    
+    // Draw the top border
+    printf(MOVE_CURSOR(%zu, %zu) BOX_TOP_LEFT, board_start.row, board_start.col);
+    for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
+    {
+        printf(BOX_HORIZONTAL);
+    }
+    printf(BOX_TOP_RIGHT);
+    
+    // Draw the laterals
+    for (size_t i = board_start.row + SCREEN_MARGIN; i <= board_end.row; i++)
+    {
+        printf(MOVE_CURSOR(%zu, %zu) BOX_VERTICAL MOVE_CURSOR(%zu, %zu) BOX_VERTICAL, i, board_start.col, i, board_end.col);
+    }
+
+    // Draw the bottom border
+    printf(MOVE_CURSOR(%zu, %zu) BOX_BOTTOM_LEFT, board_end.row, board_start.col);
+    for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
+    {
+        printf(BOX_HORIZONTAL);
+    }
+    printf(BOX_BOTTOM_RIGHT);
+    
+    // Output the game screen to the terminal
+    fflush(stdout);
 }
