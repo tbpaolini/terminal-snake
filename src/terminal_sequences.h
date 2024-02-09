@@ -12,6 +12,9 @@ Example:
 // Control Sequence Introducer: 'ESC' (0x1B) followed by '[' (left bracket, 0x5B)
 #define CSI "\x1b["
 
+// ESC character
+#define ESC "\x1b"
+
 // Control of the terminal screen
 #define ALT_SCREEN CSI "?1049h"     // Switch to the alternate terminal screen
 #define MAIN_SCREEN CSI "?1049h"    // Switch back to the main terminal screen
@@ -21,6 +24,7 @@ Example:
 #define MOVE_CURSOR(row,column) CSI #row";"#column"H"   // Move the text cursor to a given row and column (1-indexed)
 #define HIDE_CURSOR CSI "?25l"      // Do not display the text cursor
 #define SHOW_CURSOR CSI "?25h"      // Display the text cursor
+#define GET_CURSOR_POS CSI "6n"     // Report the cursor's coordinates to stdin (Format: ESC[<row>;<column>R)
 
 // Text and background colors
 // More color values at: https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#text-formatting
@@ -31,6 +35,10 @@ Example:
 #define TEXT_GRAY CSI "37m"
 #define TEXT_WHITE CSI "97m"
 #define BG_BLACK CSI "40m"
+
+// Application mode
+#define KP_APP_MODE ESC "="     // Enable Keypad Application Mode
+#define CK_APP_MODE CSI "?1h"   // Enable Cursor Keys Application Mode
 
 // Reset certain terminal properties back to the default values
 // (cursor visibility, numeric keypad, cursor keys mode, top and bottom margins, character set,
