@@ -24,3 +24,4 @@
 #include "terminal_sequences.h"
 #include "screen_elements.h"
 #include "game_loop.h"
+#include "helper_functions.h"

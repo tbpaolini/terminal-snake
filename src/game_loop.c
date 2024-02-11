@@ -1,40 +1,5 @@
 #include "includes.h"
 
-// Remember the game state for clean-up purposes
-static GameState *state_ptr;
-
-// Reset the terminal and its window back to their original states
-static void cleanup()
-{
-    SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
-    printf(TERM_RESET MAIN_SCREEN);
-    fflush(stdout);
-    SetConsoleOutputCP(state_ptr->output_cp_old);
-    SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
-    SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
-}
-
-// Perform a clean-up before exiting
-static _Noreturn void clean_exit()
-{
-    cleanup();
-    exit(EXIT_SUCCESS);
-}
-
-// Allocate memory initialized to zero and check if it has been successfully allocated
-// Note: program exits on failure.
-static void* xmalloc(size_t size)
-{
-    void* ptr = calloc(1, size);
-    if (!ptr)
-    {
-        cleanup();
-        fprintf(stderr, TEXT_RED "Error:" COLOR_RESET " Not enough memory.\n");
-        quick_exit(EXIT_FAILURE);
-    }
-    return ptr;
-}
-
 // Set-up the game state and draw the initial screen
 GameState* game_init()
 {
