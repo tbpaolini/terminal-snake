@@ -6,13 +6,20 @@ GameState *state_ptr = NULL;
 // Reset the terminal and its window back to their original states
 void cleanup()
 {
-    if (!state_ptr) return;
-    SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     printf(TERM_RESET MAIN_SCREEN);
     fflush(stdout);
+
+    #ifdef _WIN32
+    if (!state_ptr) return;
+    SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     SetConsoleOutputCP(state_ptr->output_cp_old);
     SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
+
+    #else // Linux
+
+    #endif // _WIN32
+
 }
 
 // Allocate memory initialized to zero and check if it has been successfully allocated
