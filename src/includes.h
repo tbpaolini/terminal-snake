@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <locale.h>
 #include <signal.h>
+#include <time.h>
 
 // OS headers
 #ifdef _WIN32
