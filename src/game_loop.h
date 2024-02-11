@@ -2,11 +2,12 @@
 
 #include "includes.h"
 
-#define SCREEN_MARGIN 1 // Distance that the game box is drawn from the terminal's borders
+#define SCREEN_MARGIN 1     // Distance that the game box is drawn from the terminal's borders
+#define SNAKE_START_SIZE 4  // Initial size of the snake
 
 typedef struct GameState GameState;
 typedef struct GameCoord GameCoord;
-typedef enum SnakeDirection {UP, DOWN, RIGHT, LEFT} SnakeDirection;
+typedef enum SnakeDirection {DIR_UP, DIR_DOWN, DIR_RIGHT, DIR_LEFT} SnakeDirection;
 typedef enum GameArena {FOOD=-1, EMPTY=0, BLOCKED=1} GameArena;
 
 

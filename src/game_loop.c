@@ -102,7 +102,7 @@ GameState* game_init()
     // Set the output stream to fully buffered so it is only drawn when we flush it
     setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
     
-    // Drawing a rectangle along the terminal's borders
+    /* Drawing a rectangle along the terminal's borders */
     
     // Draw the top border
     printf(MOVE_CURSOR(%zu, %zu) BOX_TOP_LEFT, board_start.row, board_start.col);
@@ -125,6 +125,85 @@ GameState* game_init()
         printf(BOX_HORIZONTAL);
     }
     printf(BOX_BOTTOM_RIGHT);
+
+    /* Snake spawning */
+
+    // Distance from the borders of the window in which the snake may not spawn
+    const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 2;
+
+    // Region in which the snake may spawn
+    const GameCoord min_coord = {
+        .row = safety_distance,
+        .col = safety_distance,
+    };
+    const GameCoord max_coord = {
+        .row = state->screen_size.row - safety_distance,
+        .col = state->screen_size.col - safety_distance,
+    };
+    const GameCoord region_size = {
+        .row = max_coord.row - min_coord.row,
+        .col = max_coord.col - min_coord.col,
+    };
+
+    // Seed the pseudo-random number generation with the current time
+    srand(time(NULL));
+
+    // Randomize the snake's starting coordinate
+    const size_t row_delta = rand() % region_size.row;
+    const size_t col_delta = rand() % region_size.col;
+    state->position = (GameCoord){
+        .row = min_coord.row + row_delta,
+        .col = min_coord.col + col_delta,
+    };
+
+    // Randomize the snakes direction
+    const bool is_horizontal = rand() % 2;
+    
+    // The snake will spawn facing away from the closest wall in its direction
+    const GameCoord mid_point = {max_coord.row / 2, max_coord.col / 2,};
+    if (is_horizontal)
+    {
+        if (state->position.row < mid_point.row)
+        {
+            state->direction = DIR_RIGHT;
+        }
+        else
+        {
+            state->direction = DIR_LEFT;
+        }
+    }
+    else // vertical
+    {
+        if (state->position.col < mid_point.col)
+        {
+            state->direction = DIR_DOWN;
+        }
+        else
+        {
+            state->direction = DIR_UP;
+        }
+    }
+
+    // The starting head's direction
+    const char* snake_head = "?";
+    switch (state->direction)
+    {
+        case DIR_RIGHT:
+            snake_head = SNAKE_HEAD_RIGHT;
+            break;
+        
+        case DIR_LEFT:
+            snake_head = SNAKE_HEAD_LEFT;
+            break;
+        
+        case DIR_DOWN:
+            snake_head = SNAKE_HEAD_DOWN;
+            break;
+        
+        case DIR_UP:
+            snake_head = SNAKE_HEAD_UP;
+            break;
+    }
     
     // Output the game screen to the terminal
     fflush(stdout);
