@@ -15,13 +15,6 @@ void cleanup()
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
 }
 
-// Perform a clean-up before exiting
-_Noreturn void clean_exit()
-{
-    cleanup();
-    exit(EXIT_SUCCESS);
-}
-
 // Allocate memory initialized to zero and check if it has been successfully allocated
 // Note: program exits on failure.
 void* xmalloc(size_t size)
@@ -31,7 +24,7 @@ void* xmalloc(size_t size)
     {
         cleanup();
         fprintf(stderr, TEXT_RED "Error:" COLOR_RESET " Not enough memory.\n");
-        quick_exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     return ptr;
 }

@@ -4,9 +4,9 @@
 GameState* game_init()
 {
     // Reset the terminal to its default properties when the program exits
-    signal(SIGINT, &clean_exit);    // Closing with Ctrl+C
-    signal(SIGTERM, &clean_exit);   // Closing through task manager
-    atexit(&cleanup);               // Program closed itself
+    atexit(&cleanup);         // Run our clean-up routine on exit
+    signal(SIGINT, &exit);    // Closing with Ctrl+C
+    signal(SIGTERM, &exit);   // Closing through task manager
 
     // Allocate and initialize the game state
     GameState *state = xmalloc(sizeof(GameState));
