@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _WIN32
+#define _CRT_RAND_S /* Enable the 'rand_s()' function on Windows */
+#endif // _WIN32
+
 // Standard headers
 #include <stdlib.h>
 #include <stdio.h>

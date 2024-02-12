@@ -59,3 +59,31 @@ void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset)
             break;
     }
 }
+
+// Generate a pseudo-random unsigned integer from 0 to UINT_MAX (on Windows) or 2^31 - 1 (on Linux)
+// Note: this function uses the entropy source from the operating system, so seeding is not needed.
+unsigned int xrand()
+{
+    #ifdef _WIN32
+    unsigned int out = 0;
+    rand_s(&out);   // Note: this function does not need manual seeding
+    return out;
+    
+    #else // Linux
+    static bool is_seeded = false;
+    if (!is_seeded)
+    {
+        FILE* dev_urandom = fopen("/dev/urandom", "rb");
+        unsigned int seed = 0;
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wunused-result"
+        fread(&seed, sizeof(seed), 1, dev_urandom);
+        #pragma GCC diagnostic pop
+        fclose(dev_urandom);
+        srandom(seed);
+        is_seeded = true;
+    }
+    return random();
+    
+    #endif
+}

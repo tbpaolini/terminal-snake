@@ -145,19 +145,16 @@ GameState* game_init()
         .col = state->position_max.col - state->position_min.col,
     };
 
-    // Seed the pseudo-random number generation with the current time
-    srand(time(NULL));
-
     // Randomize the snake's starting coordinate
-    const size_t row_delta = rand() % region_size.row;
-    const size_t col_delta = rand() % region_size.col;
+    const size_t row_delta = xrand() % region_size.row;
+    const size_t col_delta = xrand() % region_size.col;
     state->position = (GameCoord){
         .row = state->position_min.row + row_delta,
         .col = state->position_min.col + col_delta,
     };
 
     // Randomize the snakes direction
-    const bool is_horizontal = rand() % 2;
+    const bool is_horizontal = xrand() % 2;
     
     // The snake will spawn facing away from the closest wall in its direction
     const GameCoord mid_point = {state->position_max.row / 2, state->position_max.col / 2,};
