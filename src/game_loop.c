@@ -166,7 +166,7 @@ GameState* game_init()
     {
         snake_body = SNAKE_HORIZONTAL;
 
-        if (state->position.row < mid_point.row)
+        if (state->position.col < mid_point.col)
         {
             state->direction = DIR_RIGHT;
         }
@@ -179,7 +179,7 @@ GameState* game_init()
     {
         snake_body = SNAKE_VERTICAL;
         
-        if (state->position.col < mid_point.col)
+        if (state->position.row < mid_point.row)
         {
             state->direction = DIR_DOWN;
         }
