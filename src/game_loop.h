@@ -20,14 +20,17 @@ struct GameCoord
 };
 
 // Information needed for drawing the game
+// IMPORTANT: all screen coordinates are 1-indexed, because the numbering of the terminal's rows and columns also start at 1.
 struct GameState
 {
     GameArena **arena;          // (2D array) Elements on each coordinate of the screen 
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
-    size_t head;                // Index of snake[] where the head is
-    size_t tail;                // Index of snake[] where the tail is
+    size_t head;                // Index of .snake[] where the head is
+    size_t tail;                // Index of .snake[] where the tail is
     GameCoord screen_size;      // Maximum coordinates on the terminal screen
     GameCoord position;         // Coordinate of the screen where the snake's head is
+    GameCoord position_min;     // Smallest screen coordinate where the snake's head can go
+    GameCoord position_max;     // Biggest screen coordinate where the snake's head can go
     SnakeDirection direction;   // Direction the snake is moving to
     uint32_t sleep_time;        // Duration of each drawn frame
     uint64_t score;             // Player's score

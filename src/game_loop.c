@@ -132,17 +132,17 @@ GameState* game_init()
     const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 2;
 
     // Region in which the snake may spawn
-    const GameCoord min_coord = {
+    state->position_min = (GameCoord){
         .row = safety_distance,
         .col = safety_distance,
     };
-    const GameCoord max_coord = {
+    state->position_max = (GameCoord){
         .row = state->screen_size.row - safety_distance,
         .col = state->screen_size.col - safety_distance,
     };
     const GameCoord region_size = {
-        .row = max_coord.row - min_coord.row,
-        .col = max_coord.col - min_coord.col,
+        .row = state->position_max.row - state->position_min.row,
+        .col = state->position_max.col - state->position_min.col,
     };
 
     // Seed the pseudo-random number generation with the current time
@@ -152,15 +152,15 @@ GameState* game_init()
     const size_t row_delta = rand() % region_size.row;
     const size_t col_delta = rand() % region_size.col;
     state->position = (GameCoord){
-        .row = min_coord.row + row_delta,
-        .col = min_coord.col + col_delta,
+        .row = state->position_min.row + row_delta,
+        .col = state->position_min.col + col_delta,
     };
 
     // Randomize the snakes direction
     const bool is_horizontal = rand() % 2;
     
     // The snake will spawn facing away from the closest wall in its direction
-    const GameCoord mid_point = {max_coord.row / 2, max_coord.col / 2,};
+    const GameCoord mid_point = {state->position_max.row / 2, state->position_max.col / 2,};
     const char* snake_body = "?";
     if (is_horizontal)
     {
