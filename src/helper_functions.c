@@ -36,26 +36,26 @@ void* xmalloc(size_t size)
     return ptr;
 }
 
-// Move a coordinate by a certain amount in the opposite direction
-void offset_coord(GameCoord *coord, SnakeDirection dir, size_t offset)
+// Move in-place a coordinate by a certain offset in the given direction
+void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset)
 {
     if (!coord) return;
     switch (dir)
     {
         case DIR_UP:
-            coord->row += offset;
-            break;
-        
-        case DIR_DOWN:
             coord->row -= offset;
             break;
         
+        case DIR_DOWN:
+            coord->row += offset;
+            break;
+        
         case DIR_RIGHT:
-            coord->col -= offset;
+            coord->col += offset;
             break;
         
         case DIR_LEFT:
-            coord->col += offset;
+            coord->col -= offset;
             break;
     }
 }

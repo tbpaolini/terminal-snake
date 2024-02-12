@@ -221,7 +221,7 @@ GameState* game_init()
     // Draw the body
     for (size_t i = 0; i < (SNAKE_START_SIZE - 1); i++)
     {
-        offset_coord(&pos, state->direction, 1);
+        move_coord(&pos, state->direction, -1);
         printf(MOVE_CURSOR(%zu,%zu) "%s", pos.row, pos.col, snake_body);
     }
     
