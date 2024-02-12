@@ -14,9 +14,9 @@
 #define SNAKE_HORIZONTAL u8"═"
 #define SNAKE_VERTICAL u8"║"
 
-#define SNAKE_HEAD_UP u8"╦"
-#define SNAKE_HEAD_DOWN u8"╩"
-#define SNAKE_HEAD_LEFT u8"╠"
-#define SNAKE_HEAD_RIGHT u8"╣"
+#define SNAKE_HEAD_UP u8"▲"
+#define SNAKE_HEAD_DOWN u8"▼"
+#define SNAKE_HEAD_LEFT u8"◄"
+#define SNAKE_HEAD_RIGHT u8"►"
 
 #define FOOD_PELLET "*"
