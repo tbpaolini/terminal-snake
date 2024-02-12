@@ -161,8 +161,11 @@ GameState* game_init()
     
     // The snake will spawn facing away from the closest wall in its direction
     const GameCoord mid_point = {max_coord.row / 2, max_coord.col / 2,};
+    const char* snake_body = "?";
     if (is_horizontal)
     {
+        snake_body = SNAKE_HORIZONTAL;
+
         if (state->position.row < mid_point.row)
         {
             state->direction = DIR_RIGHT;
@@ -174,6 +177,8 @@ GameState* game_init()
     }
     else // vertical
     {
+        snake_body = SNAKE_VERTICAL;
+        
         if (state->position.col < mid_point.col)
         {
             state->direction = DIR_DOWN;
@@ -203,6 +208,21 @@ GameState* game_init()
         case DIR_UP:
             snake_head = SNAKE_HEAD_UP;
             break;
+    }
+
+    /* Draw the snake */
+
+    GameCoord pos = {state->position.row, state->position.col}; // Current drawing position
+
+    // Draw the head at the starting position
+    // (the snake's color is green)
+    printf(MOVE_CURSOR(%zu,%zu) TEXT_GREEN "%s", pos.row, pos.col, snake_head);
+
+    // Draw the body
+    for (size_t i = 0; i < (SNAKE_START_SIZE - 1); i++)
+    {
+        offset_coord(&pos, state->direction, 1);
+        printf(MOVE_CURSOR(%zu,%zu) "%s", pos.row, pos.col, snake_body);
     }
     
     // Output the game screen to the terminal
