@@ -19,6 +19,7 @@ Example:
 #define ALT_SCREEN CSI "?1049h"     // Switch to the alternate terminal screen
 #define MAIN_SCREEN CSI "?1049l"    // Switch back to the main terminal screen
 #define CLEAR_SCREEN CSI "2J"       // Erase all characters on the terminal screen
+#define RESIZE_SCREEN(row,col) CSI "8"#row";"#col"t"    // Set the terminal's size to the given amount of rows and columns
 
 // Control of the cursor
 #define MOVE_CURSOR(row,column) CSI #row";"#column"H"   // Move the text cursor to a given row and column (1-indexed)
