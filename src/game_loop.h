@@ -49,6 +49,7 @@ struct GameState
     UINT output_cp_old;     // original code page of the terminal
     
     #else
+    struct termios term_flags_old;
     
     #endif // _WIN32
 };

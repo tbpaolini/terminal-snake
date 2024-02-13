@@ -80,6 +80,14 @@ GameState* game_init()
 
     #else // Linux
 
+    // Disable input echoing and make the input to be available immediately
+    // (that is, no need for a line to be entered in order for us to read the user's input)
+    struct termios term_flags = {0};
+    tcgetattr(STDIN_FILENO, &term_flags);
+    state->term_flags_old = term_flags;
+    term_flags.c_lflag &= (~ECHO & ~ICANON);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term_flags);
+
     // Get the amount of rows and columns that are visible on the terminal window
     struct winsize term_size = {0};
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);

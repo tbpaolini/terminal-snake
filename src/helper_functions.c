@@ -17,6 +17,7 @@ void cleanup()
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
 
     #else // Linux
+    tcsetattr(STDIN_FILENO, TCSANOW, &state_ptr->term_flags_old);
 
     #endif // _WIN32
 
