@@ -96,6 +96,9 @@ GameState* game_init()
         term_size.ws_col,
     };
 
+    // Change the terminal back to the original size when the window is resized
+    signal(SIGWINCH, &resize_term);
+
     #endif // _WIN_32
 
     // Top left coordinates of the board

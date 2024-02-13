@@ -18,3 +18,7 @@ void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset);
 // Generate a pseudo-random unsigned integer from 0 to UINT_MAX
 // Note: this function uses the entropy source from the operating system, so seeding is not needed.
 unsigned int xrand();
+
+// Reset the terminal size to the original values
+// Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
+void resize_term(int signal);

@@ -88,3 +88,11 @@ unsigned int xrand()
     
     #endif
 }
+
+// Reset the terminal size to the original values
+// Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
+void resize_term(int signal)
+{
+    printf(RESIZE_SCREEN(%zu,%zu), state_ptr->screen_size.row, state_ptr->screen_size.col);
+    fflush(stdout);
+}
