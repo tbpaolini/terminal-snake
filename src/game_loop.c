@@ -80,6 +80,13 @@ GameState* game_init()
 
     #else // Linux
 
+    // Get the amount of rows and columns that are visible on the terminal window
+    struct winsize term_size = {0};
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
+    state->screen_size = (GameCoord){
+        term_size.ws_row,
+        term_size.ws_col,
+    };
 
     #endif // _WIN_32
 

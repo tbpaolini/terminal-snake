@@ -19,6 +19,7 @@
 #include <windows.h>
 
 #else
+#include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <signal.h>
