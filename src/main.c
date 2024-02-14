@@ -6,7 +6,8 @@
 
 int main(int argc, char **argv)
 {
-    
+    game_init();
+    getchar();
     
     return 0;
 }
