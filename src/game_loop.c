@@ -119,30 +119,50 @@ GameState* game_init()
 
     // Set the output stream to fully buffered so it is only drawn when we flush it
     setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
+
+    // 2D array for the collision mask
+    // ('true' means a position where the snake collides with an wall or itself)
+    state->arena = (bool**)alloc_2Darray(
+        state->screen_size.col,
+        state->screen_size.row,
+        sizeof(typeof(**state->arena))
+    );
     
     /* Drawing a rectangle along the terminal's borders */
     
     // Draw the top border
     printf(MOVE_CURSOR(%zu, %zu) BOX_TOP_LEFT, board_start.row, board_start.col);
+    state->arena[board_start.row - 1][board_start.col - 1] = true;
+    size_t top_count = 0;
     for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
     {
         printf(BOX_HORIZONTAL);
+        state->arena[board_start.row - 1][board_start.col + i] = true;
+        top_count++;
     }
     printf(BOX_TOP_RIGHT);
+    state->arena[board_start.row - 1][board_start.col + top_count] = true;
     
     // Draw the laterals
     for (size_t i = board_start.row + SCREEN_MARGIN; i <= board_end.row; i++)
     {
         printf(MOVE_CURSOR(%zu, %zu) BOX_VERTICAL MOVE_CURSOR(%zu, %zu) BOX_VERTICAL, i, board_start.col, i, board_end.col);
+        state->arena[i - 1][board_start.col - 1] = true;
+        state->arena[i - 1][board_end.col - 1] = true;
     }
 
     // Draw the bottom border
     printf(MOVE_CURSOR(%zu, %zu) BOX_BOTTOM_LEFT, board_end.row, board_start.col);
+    state->arena[board_end.row - 1][board_start.col - 1] = true;
+    size_t bottom_count = 0;
     for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
     {
         printf(BOX_HORIZONTAL);
+        state->arena[board_end.row - 1][board_start.col + i] = true;
+        bottom_count++;
     }
     printf(BOX_BOTTOM_RIGHT);
+    state->arena[board_end.row - 1][board_start.col + bottom_count] = true;
 
     /* Snake spawning */
 
@@ -232,12 +252,14 @@ GameState* game_init()
     // Draw the head at the starting position
     // (the snake's color is green)
     printf(MOVE_CURSOR(%zu,%zu) TEXT_GREEN "%s", pos.row, pos.col, snake_head);
+    state->arena[pos.row - 1][pos.col - 1] = true;
 
     // Draw the body
     for (size_t i = 0; i < (SNAKE_START_SIZE - 1); i++)
     {
         move_coord(&pos, state->direction, -1);
         printf(MOVE_CURSOR(%zu,%zu) "%s", pos.row, pos.col, snake_body);
+        state->arena[pos.row - 1][pos.col - 1] = true;
     }
     
     // Output the game screen to the terminal
