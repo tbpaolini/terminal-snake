@@ -21,4 +21,4 @@ unsigned int xrand();
 
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
-void resize_term(int signal);
+void restore_term(int signal);

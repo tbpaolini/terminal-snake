@@ -97,7 +97,7 @@ GameState* game_init()
     };
 
     // Change the terminal back to the original size when the window is resized
-    signal(SIGWINCH, &resize_term);
+    signal(SIGWINCH, &restore_term);
 
     #endif // _WIN_32
 
