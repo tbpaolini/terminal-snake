@@ -12,6 +12,11 @@ void cleanup();
 // Note: program exits on failure.
 void* xmalloc(size_t size);
 
+// Allocate memory for a two dimensional array and initialize its elements to zero
+// Layout: array[height][width]
+// Note: the returned pointer can be passed to free() to get the entire array freed at once.
+void** alloc_2Darray(size_t width, size_t height, size_t element_size);
+
 // Move in-place a coordinate by a certain offset in the given direction
 void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset);
 

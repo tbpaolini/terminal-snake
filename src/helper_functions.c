@@ -37,6 +37,29 @@ void* xmalloc(size_t size)
     return ptr;
 }
 
+// Allocate memory for a two dimensional array and initialize its elements to zero
+// Layout: array[height][width]
+// Note: the returned pointer can be passed to free() to get the entire array freed at once.
+void** alloc_2Darray(size_t width, size_t height, size_t element_size)
+{
+    const size_t col_size = sizeof(void*) * height;
+    const size_t row_size = width * element_size;
+    const size_t total_size = col_size + (height * row_size);
+
+    // The 2D array is a sequence of row pointers followed by the elements themselves
+    void** array = xmalloc(total_size);
+    
+    // Add the row pointers to the array
+    uintptr_t row_address = (uintptr_t)array + col_size;
+    for (size_t i = 0; i < height; i++)
+    {
+        array[i] = (void*)row_address;
+        row_address += row_size;
+    }
+    
+    return array;
+}
+
 // Move in-place a coordinate by a certain offset in the given direction
 void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset)
 {
