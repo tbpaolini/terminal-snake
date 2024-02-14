@@ -164,29 +164,40 @@ GameState* game_init()
 
     /* Snake spawning */
 
+    // Region in which the snake can spawn
+    state->position_min = (GameCoord){
+        .row = SCREEN_MARGIN + 1,
+        .col = SCREEN_MARGIN + 1,
+    };
+
+    state->position_max = (GameCoord){
+        .row = state->screen_size.row - (SCREEN_MARGIN + 1),
+        .col = state->screen_size.col - (SCREEN_MARGIN + 1),
+    };
+
     // Distance from the borders of the window in which the snake may not spawn
-    const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 2;
+    const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
 
     // Region in which the snake may spawn
-    state->position_min = (GameCoord){
-        .row = safety_distance,
-        .col = safety_distance,
+    const GameCoord region_min = (GameCoord){
+        .row = 1 + safety_distance,
+        .col = 1 + safety_distance,
     };
-    state->position_max = (GameCoord){
+    const GameCoord region_max = (GameCoord){
         .row = state->screen_size.row - safety_distance,
         .col = state->screen_size.col - safety_distance,
     };
     const GameCoord region_size = {
-        .row = state->position_max.row - state->position_min.row,
-        .col = state->position_max.col - state->position_min.col,
+        .row = region_max.row - region_min.row + 1,
+        .col = region_max.col - region_min.col + 1,
     };
 
     // Randomize the snake's starting coordinate
     const size_t row_delta = xrand() % region_size.row;
     const size_t col_delta = xrand() % region_size.col;
     state->position = (GameCoord){
-        .row = state->position_min.row + row_delta,
-        .col = state->position_min.col + col_delta,
+        .row = region_min.row + row_delta,
+        .col = region_min.col + col_delta,
     };
 
     // Randomize the snakes direction
