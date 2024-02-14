@@ -116,6 +116,7 @@ unsigned int xrand()
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal)
 {
+    if (!state_ptr) return;
     printf(RESIZE_SCREEN(%zu,%zu), state_ptr->screen_size.row, state_ptr->screen_size.col);
     fflush(stdout);
 }
