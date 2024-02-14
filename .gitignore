@@ -3,3 +3,4 @@ bin/**
 *.o
 *.out
 *.exe
+src/*.txt

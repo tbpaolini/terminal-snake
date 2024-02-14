@@ -27,3 +27,6 @@ unsigned int xrand();
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal);
+
+// (debugging) Save the current collision grid to a text file
+void save_collision_grid(GameState *state, const char* path);

@@ -119,3 +119,18 @@ void restore_term(int signal)
     printf(RESIZE_SCREEN(%zu,%zu), state_ptr->screen_size.row, state_ptr->screen_size.col);
     fflush(stdout);
 }
+
+// (debugging) Save the current collision grid to a text file
+void save_collision_grid(GameState *state, const char* path)
+{
+    FILE *f = fopen(path, "wt");
+    for (size_t row = 0; row < state->screen_size.row; row++)
+    {
+        for (size_t col = 0; col < state->screen_size.col; col++)
+        {
+            fprintf(f, "%d", state->arena[row][col]);
+        }
+        fprintf(f, "\n");
+    }
+    fclose(f);
+}
