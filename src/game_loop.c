@@ -133,12 +133,11 @@ GameState* game_init()
     // Draw the top border
     printf(MOVE_CURSOR(%zu, %zu) BOX_TOP_LEFT, board_start.row, board_start.col);
     state->arena[board_start.row - 1][board_start.col - 1] = true;
-    size_t top_count = 0;
-    for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
+    const size_t top_count = state->screen_size.col - 2 * (SCREEN_MARGIN + 1);
+    for (size_t i = 0; i < top_count; i++)
     {
         printf(BOX_HORIZONTAL);
         state->arena[board_start.row - 1][board_start.col + i] = true;
-        top_count++;
     }
     printf(BOX_TOP_RIGHT);
     state->arena[board_start.row - 1][board_start.col + top_count] = true;
@@ -154,12 +153,11 @@ GameState* game_init()
     // Draw the bottom border
     printf(MOVE_CURSOR(%zu, %zu) BOX_BOTTOM_LEFT, board_end.row, board_start.col);
     state->arena[board_end.row - 1][board_start.col - 1] = true;
-    size_t bottom_count = 0;
-    for (size_t i = 0; i < state->screen_size.col - 2 * (SCREEN_MARGIN + 1); i++)
+    const size_t bottom_count = state->screen_size.col - 2 * (SCREEN_MARGIN + 1);
+    for (size_t i = 0; i < bottom_count; i++)
     {
         printf(BOX_HORIZONTAL);
         state->arena[board_end.row - 1][board_start.col + i] = true;
-        bottom_count++;
     }
     printf(BOX_BOTTOM_RIGHT);
     state->arena[board_end.row - 1][board_start.col + bottom_count] = true;
