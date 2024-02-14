@@ -8,8 +8,6 @@
 typedef struct GameState GameState;
 typedef struct GameCoord GameCoord;
 typedef enum SnakeDirection {DIR_UP, DIR_DOWN, DIR_RIGHT, DIR_LEFT} SnakeDirection;
-typedef enum GameArena {FOOD=-1, EMPTY=0, BLOCKED=1} GameArena;
-
 
 // Coordinates on the terminal
 // Notes: 1-indexed, top left is (1,1).
@@ -23,7 +21,7 @@ struct GameCoord
 // IMPORTANT: all screen coordinates are 1-indexed, because the numbering of the terminal's rows and columns also start at 1.
 struct GameState
 {
-    GameArena **arena;          // (2D array) Elements on each coordinate of the screen 
+    bool **arena;               // (2D array) Collision mask for the game area ('true' means a occupied space)
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
     size_t head;                // Index of .snake[] where the head is
     size_t tail;                // Index of .snake[] where the tail is
@@ -31,6 +29,7 @@ struct GameState
     GameCoord position;         // Coordinate of the screen where the snake's head is
     GameCoord position_min;     // Smallest screen coordinate where the snake's head can go
     GameCoord position_max;     // Biggest screen coordinate where the snake's head can go
+    GameCoord food;             // Screen coordinate of the food pellet
     SnakeDirection direction;   // Direction the snake is moving to
     uint32_t sleep_time;        // Duration of each drawn frame
     uint64_t score;             // Player's score
