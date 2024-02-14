@@ -270,6 +270,13 @@ GameState* game_init()
         printf(MOVE_CURSOR(%zu,%zu) "%s", pos.row, pos.col, snake_body);
         state->arena[pos.row - 1][pos.col - 1] = true;
     }
+
+    // Count the amount of non-blocking spaces on the snake's area
+    const GameCoord box_size = {
+        .row = state->position_max.row - state->position_min.col + 1,
+        .col = state->position_max.col - state->position_min.col + 1,
+    };
+    state->open_count = (box_size.row * box_size.col) - SNAKE_START_SIZE;
     
     // Output the game screen to the terminal
     fflush(stdout);
