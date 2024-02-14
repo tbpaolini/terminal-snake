@@ -120,7 +120,7 @@ GameState* game_init()
     // Set the output stream to fully buffered so it is only drawn when we flush it
     setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
 
-    // 2D array for the collision mask
+    // 2D array for the collision grid
     // ('true' means a position where the snake collides with an wall or itself)
     state->arena = (bool**)alloc_2Darray(
         state->screen_size.col,

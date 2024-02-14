@@ -21,7 +21,7 @@ struct GameCoord
 // IMPORTANT: all screen coordinates are 1-indexed, because the numbering of the terminal's rows and columns also start at 1.
 struct GameState
 {
-    bool **arena;               // (2D array) Collision mask for the game area ('true' means a occupied space)
+    bool **arena;               // (2D array) Collision grid for the game area ('true' means a occupied space)
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
     size_t head;                // Index of .snake[] where the head is
     size_t tail;                // Index of .snake[] where the tail is
