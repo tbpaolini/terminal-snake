@@ -8,6 +8,10 @@ extern GameState *state_ptr;
 // Reset the terminal and its window back to their original states
 void cleanup();
 
+// Prints a formatted string as an error then exit the program with the given status code
+// Note: "Error: " (in red) is added before the message, and a line break is added after the message.
+void _Noreturn printf_error_exit(int status_code, const char* format, ...);
+
 // Allocate memory initialized to zero and check if it has been successfully allocated
 // Note: program exits on failure.
 void* xmalloc(size_t size);

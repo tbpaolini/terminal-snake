@@ -13,6 +13,7 @@
 #include <locale.h>
 #include <signal.h>
 #include <time.h>
+#include <stdarg.h>
 
 // OS headers
 #ifdef _WIN32

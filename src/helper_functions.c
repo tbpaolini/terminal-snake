@@ -6,6 +6,7 @@ GameState *state_ptr = NULL;
 // Reset the terminal and its window back to their original states
 void cleanup()
 {
+    if (!state_ptr) return;
     printf(TERM_RESET MAIN_SCREEN);
     fflush(stdout);
 
@@ -20,7 +21,26 @@ void cleanup()
     tcsetattr(STDIN_FILENO, TCSANOW, &state_ptr->term_flags_old);
 
     #endif // _WIN32
+}
 
+// Prints a formatted string as an error then exit the program with the given status code
+// Note: "Error: " (in red) is added before the message, and a line break is added after the message.
+void _Noreturn printf_error_exit(int status_code, const char* format, ...)
+{
+    // Exit the game screen then return to the main terminal screen
+    cleanup();
+    state_ptr = NULL;
+    
+    // Print the formatted string to stderr
+    va_list args = {0};
+    va_start(args, format);
+    fprintf(stderr, TEXT_RED "Error: " COLOR_RESET);
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "\n");
+    va_end(args);
+    
+    // Close the program and return the error code
+    exit(status_code);
 }
 
 // Allocate memory initialized to zero and check if it has been successfully allocated
