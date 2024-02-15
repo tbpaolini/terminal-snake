@@ -50,9 +50,7 @@ void* xmalloc(size_t size)
     void* ptr = calloc(1, size);
     if (!ptr)
     {
-        cleanup();
-        fprintf(stderr, TEXT_RED "Error:" COLOR_RESET " Not enough memory.\n");
-        exit(EXIT_FAILURE);
+        printf_error_exit(ERR_NO_MEMORY, "Not enough memory.");
     }
     return ptr;
 }
