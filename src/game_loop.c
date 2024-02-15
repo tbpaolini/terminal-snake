@@ -177,6 +177,18 @@ GameState* game_init()
 
     // Distance from the borders of the window in which the snake may not spawn
     const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
+    const size_t size_cutoff = 2 * safety_distance;
+
+    // Check if the terminal is big enough for the game
+    if ( (state->screen_size.row <= size_cutoff) || (state->screen_size.col <= size_cutoff) )
+    {
+        printf_error_exit(
+            ERR_TINY_TERMINAL,
+            "Terminal's size is too small for the game, "
+            "it should be at least %zu by %zu characters.",
+            size_cutoff+1, size_cutoff+1
+        );
+    }
 
     // Region in which the snake may spawn
     const GameCoord region_min = (GameCoord){
