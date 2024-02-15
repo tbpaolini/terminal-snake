@@ -33,3 +33,7 @@
 #include "game_loop.h"
 #include "game_logic.h"
 #include "helper_functions.h"
+
+// Error codes
+#define ERR_NO_MEMORY -1        // Failed to allocate memory
+#define ERR_TINY_TERMINAL -2    // Terminal window is too small for the game
