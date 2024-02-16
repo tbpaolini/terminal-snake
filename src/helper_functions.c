@@ -11,7 +11,6 @@ void cleanup()
     fflush(stdout);
 
     #ifdef _WIN32
-    if (!state_ptr) return;
     SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     SetConsoleOutputCP(state_ptr->output_cp_old);
     SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
