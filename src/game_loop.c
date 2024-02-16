@@ -58,7 +58,7 @@ GameState* game_init()
     // the input is sent immediately after a key is pressed,
     // and ignore mouse input.
     state->input_mode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
-    state->input_mode &= (~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT & ~ENABLE_MOUSE_INPUT);
+    state->input_mode &= (~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT & ~ENABLE_MOUSE_INPUT);
     if (!SetConsoleMode(state->input_handle, state->input_mode))
     {
         // TO DO: Exit...
