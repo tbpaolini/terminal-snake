@@ -51,6 +51,7 @@ GameState* game_init()
     {
         // TO DO: Exit...
     }
+    windows_vt_seq = true;
 
     // Enable input through the arrows on the terminal.
     // Also make so new characters overwrite existing ones,

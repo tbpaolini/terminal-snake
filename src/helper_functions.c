@@ -3,18 +3,30 @@
 // Remember the game state for clean-up purposes
 GameState *state_ptr = NULL;
 
+#ifdef _WIN32
+// Whether virtual terminal sequences were already enabled on Windows console
+bool windows_vt_seq = false;
+#endif // _WIN32
+
 // Reset the terminal and its window back to their original states
 void cleanup()
 {
-    if (!state_ptr) return;
+    // Exit the game screen then return to the main terminal screen
+    #ifdef _WIN32
+    if (windows_vt_seq) printf(TERM_RESET MAIN_SCREEN);
+    #else
     printf(TERM_RESET MAIN_SCREEN);
+    #endif // _WIN32
     fflush(stdout);
 
+    // Reset the terminal's settings back to the original
+    if (!state_ptr) return;
     #ifdef _WIN32
     SetWindowLong(state_ptr->window, GWL_STYLE, state_ptr->window_mode_old);
     SetConsoleOutputCP(state_ptr->output_cp_old);
     SetConsoleMode(state_ptr->input_handle, state_ptr->input_mode_old);
     SetConsoleMode(state_ptr->output_handle, state_ptr->output_mode_old);
+    windows_vt_seq = false;
 
     #else // Linux
     tcsetattr(STDIN_FILENO, TCSANOW, &state_ptr->term_flags_old);
@@ -41,6 +53,41 @@ void _Noreturn printf_error_exit(int status_code, const char* format, ...)
     // Close the program and return the error code
     exit(status_code);
 }
+
+#ifdef _WIN32
+// On Windows, print the error message from GetLastError() then exit the program returning its error code
+// Note: the message is prefixed with the name of the source file and the line number of where this function was called from.
+void _Noreturn windows_error_exit(const char* file_name, int line_number)
+{
+    // Get from the last error code of the Windows API
+    const DWORD error_code = GetLastError();
+    WCHAR error_message[1024] = {0};
+    const size_t buffer_size = sizeof(error_message) - sizeof(WCHAR);   // Leave space for a NUL terminator at the end
+
+    // Get the text that describes the error
+    DWORD message_size = FormatMessageW(
+        FORMAT_MESSAGE_FROM_SYSTEM |    // Get the message from the system's string table
+        FORMAT_MESSAGE_IGNORE_INSERTS,  // Ignore insert sequences (like %1) on the string
+        NULL,                           // String table (NULL since we are using the one from the system)
+        error_code,                     // Value returned by GetLastError()
+        0,                              // Language ID (0 for using the system's current language)
+        (LPWSTR)error_message,          // Buffer to store the error message
+        buffer_size,                    // Size of the message buffer
+        NULL                            // Format string for the message (NULL since we are ignoring insert sequences)
+    );
+
+    // Exit the game screen then return to the main terminal screen
+    cleanup();
+    state_ptr = NULL;
+
+    // Ensure that non-english characters are going to be printed properly 
+    setlocale(LC_ALL, "");
+    
+    // Print the error message to stderr then exit returning the error code
+    fwprintf(stderr, L"Error %lu at [%hs:%d]: %s", error_code, file_name, line_number, error_message);
+    exit(error_code);
+}
+#endif // _WIN32
 
 // Allocate memory initialized to zero and check if it has been successfully allocated
 // Note: program exits on failure.

@@ -5,12 +5,23 @@
 // Remember the game state for clean-up purposes
 extern GameState *state_ptr;
 
+#ifdef _WIN32
+// Whether virtual terminal sequences were already enabled on Windows console
+extern bool windows_vt_seq;
+#endif // _WIN32
+
 // Reset the terminal and its window back to their original states
 void cleanup();
 
 // Prints a formatted string as an error then exit the program with the given status code
 // Note: "Error: " (in red) is added before the message, and a line break is added after the message.
 void _Noreturn printf_error_exit(int status_code, const char* format, ...);
+
+#ifdef _WIN32
+// On Windows, print the error message from GetLastError() then exit the program returning its error code
+// Note: the message is prefixed with the name of the source file and the line number of where this function was called from.
+void _Noreturn windows_error_exit(const char* file_name, int line_number);
+#endif // _WIN32
 
 // Allocate memory initialized to zero and check if it has been successfully allocated
 // Note: program exits on failure.
