@@ -42,10 +42,19 @@ void _Noreturn printf_error_exit(int status_code, const char* format, ...)
     cleanup();
     state_ptr = NULL;
     
+    // Print the red text "Error:"
+    #ifdef _WIN32
+    if (windows_vt_seq) fprintf(stderr, TEXT_RED "Error: " COLOR_RESET);
+    else fprintf(stderr, "Error: ");
+    
+    #else
+    fprintf(stderr, TEXT_RED "Error: " COLOR_RESET);
+    
+    #endif // _WIN32
+    
     // Print the formatted string to stderr
     va_list args = {0};
     va_start(args, format);
-    fprintf(stderr, TEXT_RED "Error: " COLOR_RESET);
     vfprintf(stderr, format, args);
     fprintf(stderr, "\n");
     va_end(args);
