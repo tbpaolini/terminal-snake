@@ -1,5 +1,10 @@
 #pragma once
 
+#define WINDOWS_ERROR_CHECK(expr) if (!(expr))\
+    {\
+        windows_error_exit(__FILE__, __LINE__);\
+    }
+
 #define LINUX_ERROR_CHECK(expr) if ((expr) == -1)\
     {\
         printf_error_exit(\

@@ -16,43 +16,29 @@ GameState* game_init()
 
     // Make the terminal to accept Unicode characters encoded in UTF-8
     state->output_cp_old = GetConsoleOutputCP();
-    if (!state->output_cp_old) windows_error_exit(__FILE__, __LINE__);
-    if (!SetConsoleOutputCP(CP_UTF8)) windows_error_exit(__FILE__, __LINE__);
+    WINDOWS_ERROR_CHECK(SetConsoleOutputCP(CP_UTF8));
 
     // Get the Windows' handles for the standard input and output streams
     state->output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
     state->input_handle = GetStdHandle(STD_INPUT_HANDLE);
 
     // Get the settings of the output stream
-    if (!GetConsoleMode(state->output_handle, &state->output_mode))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(GetConsoleMode(state->output_handle, &state->output_mode));
     state->output_mode_old = state->output_mode;
 
     // Get the settings of the input stream
-    if (!GetConsoleMode(state->input_handle, &state->input_mode))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(GetConsoleMode(state->input_handle, &state->input_mode));
     state->input_mode_old = state->input_mode;
 
     // Get the style of the window where the terminal is
     state->window = GetConsoleWindow();
-    if (!state->window) windows_error_exit(__FILE__, __LINE__);
-    if( !(state->window_mode = GetWindowLong(state->window, GWL_STYLE)) )
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK( state->window_mode = GetWindowLong(state->window, GWL_STYLE) );
     state->window_mode_old = state->window_mode;
 
     // Enable escape sequences on the terminal,
     // and do not move to the next line when writing a character to the end of a line
     state->output_mode |= (ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN);
-    if (!SetConsoleMode(state->output_handle, state->output_mode))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(SetConsoleMode(state->output_handle, state->output_mode));
     windows_vt_seq = true;
 
     // Enable input through the arrows on the terminal.
@@ -61,24 +47,15 @@ GameState* game_init()
     // and ignore mouse input.
     state->input_mode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
     state->input_mode &= (~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT & ~ENABLE_MOUSE_INPUT);
-    if (!SetConsoleMode(state->input_handle, state->input_mode))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(SetConsoleMode(state->input_handle, state->input_mode));
     
     // For the terminal's window, disable: maximizing button, resizing, horizontal and vertical scrollbars
     state->window_mode &= (~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_HSCROLL & ~WS_VSCROLL);
-    if (!SetWindowLong(state->window, GWL_STYLE, state->window_mode))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(SetWindowLong(state->window, GWL_STYLE, state->window_mode));
 
     // Get the amount of rows and columns that are visible on the terminal window
     CONSOLE_SCREEN_BUFFER_INFO buffer_info = {0};
-    if (!GetConsoleScreenBufferInfo(state->output_handle, &buffer_info))
-    {
-        windows_error_exit(__FILE__, __LINE__);
-    }
+    WINDOWS_ERROR_CHECK(GetConsoleScreenBufferInfo(state->output_handle, &buffer_info));
     
     state->screen_size = (GameCoord){
         buffer_info.srWindow.Bottom - buffer_info.srWindow.Top + 1,
