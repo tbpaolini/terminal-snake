@@ -175,11 +175,20 @@ unsigned int xrand()
     {
         FILE* dev_urandom = fopen("/dev/urandom", "rb");
         unsigned int seed = 0;
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wunused-result"
-        fread(&seed, sizeof(seed), 1, dev_urandom);
-        #pragma GCC diagnostic pop
-        fclose(dev_urandom);
+        size_t read_count = 0;
+        if (dev_urandom)
+        {
+            read_count = fread(&seed, sizeof(seed), 1, dev_urandom);
+            fclose(dev_urandom);
+        }
+        if (read_count != 1)
+        {
+            printf_error_exit(
+                errno,
+                "Could not seed the pseudo-random number generator with bytes from '/dev/urandom' (%s).",
+                strerror(errno)
+            );
+        }
         srandom(seed);
         is_seeded = true;
     }
