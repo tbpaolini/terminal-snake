@@ -8,6 +8,9 @@ extern GameState *state_ptr;
 #ifdef _WIN32
 // Whether virtual terminal sequences were already enabled on Windows console
 extern bool windows_vt_seq;
+#else
+// Whether the program has already changed the attributes of the terminal on Linux
+extern bool linux_term_flags_set;
 #endif // _WIN32
 
 // Reset the terminal and its window back to their original states

@@ -90,14 +90,15 @@ GameState* game_init()
     // Disable input echoing and make the input to be available immediately
     // (that is, no need for a line to be entered in order for us to read the user's input)
     struct termios term_flags = {0};
-    tcgetattr(STDIN_FILENO, &term_flags);
+    LINUX_ERROR_CHECK(tcgetattr(STDIN_FILENO, &term_flags));
     state->term_flags_old = term_flags;
     term_flags.c_lflag &= (~ECHO & ~ICANON);
-    tcsetattr(STDIN_FILENO, TCSANOW, &term_flags);
+    LINUX_ERROR_CHECK(tcsetattr(STDIN_FILENO, TCSANOW, &term_flags));
+    linux_term_flags_set = true;
 
     // Get the amount of rows and columns that are visible on the terminal window
     struct winsize term_size = {0};
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
+    LINUX_ERROR_CHECK(ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size));
     state->screen_size = (GameCoord){
         term_size.ws_row,
         term_size.ws_col,

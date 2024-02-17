@@ -14,6 +14,8 @@
 #include <signal.h>
 #include <time.h>
 #include <stdarg.h>
+#include <errno.h>
+#include <string.h>
 
 // OS headers
 #ifdef _WIN32
@@ -33,6 +35,7 @@
 #include "game_loop.h"
 #include "game_logic.h"
 #include "helper_functions.h"
+#include "helper_macros.h"
 
 // Error codes
 #define ERR_NO_MEMORY -1        // Failed to allocate memory

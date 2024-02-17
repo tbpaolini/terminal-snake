@@ -6,6 +6,9 @@ GameState *state_ptr = NULL;
 #ifdef _WIN32
 // Whether virtual terminal sequences were already enabled on Windows console
 bool windows_vt_seq = false;
+#else
+// Whether the program has already changed the attributes of the terminal on Linux
+bool linux_term_flags_set = false;
 #endif // _WIN32
 
 // Reset the terminal and its window back to their original states
@@ -29,7 +32,7 @@ void cleanup()
     windows_vt_seq = false;
 
     #else // Linux
-    tcsetattr(STDIN_FILENO, TCSANOW, &state_ptr->term_flags_old);
+    if (linux_term_flags_set) tcsetattr(STDIN_FILENO, TCSANOW, &state_ptr->term_flags_old);
 
     #endif // _WIN32
 }
