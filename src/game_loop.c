@@ -151,8 +151,8 @@ GameState* game_init()
 
     // Region in which the snake can spawn
     state->position_min = (GameCoord){
-        .row = SCREEN_MARGIN + 1,
-        .col = SCREEN_MARGIN + 1,
+        .row = SCREEN_MARGIN + 2,
+        .col = SCREEN_MARGIN + 2,
     };
 
     state->position_max = (GameCoord){
@@ -275,6 +275,9 @@ GameState* game_init()
     };
     state->space_count = box_size.row * box_size.col;
     state->open_count = state->space_count - SNAKE_START_SIZE;
+
+    // Spawn the first food pellet
+    spawn_food(state);
     
     // Output the game screen to the terminal
     fflush(stdout);

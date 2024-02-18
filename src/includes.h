@@ -40,3 +40,4 @@
 // Error codes
 #define ERR_NO_MEMORY -1        // Failed to allocate memory
 #define ERR_TINY_TERMINAL -2    // Terminal window is too small for the game
+#define ERR_ARRAY_OVERFLOW -3   // Tried to access an out-of-bounds coordinate

@@ -214,6 +214,11 @@ void save_collision_grid(GameState *state, const char* path)
     {
         for (size_t col = 0; col < state->screen_size.col; col++)
         {
+            if ((row+1 == state->food.row) && (col+1 == state->food.col))
+            {
+                fprintf(f, "*");    // Show the food pellet's position
+            }
+ 
             fprintf(f, "%d", state->arena[row][col]);
         }
         fprintf(f, "\n");
