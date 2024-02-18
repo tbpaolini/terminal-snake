@@ -268,12 +268,13 @@ GameState* game_init()
         state->arena[pos.row - 1][pos.col - 1] = true;
     }
 
-    // Count the amount of non-blocking spaces on the snake's area
+    // Count the amount of spaces on the snake's area
     const GameCoord box_size = {
         .row = state->position_max.row - state->position_min.col + 1,
         .col = state->position_max.col - state->position_min.col + 1,
     };
-    state->open_count = (box_size.row * box_size.col) - SNAKE_START_SIZE;
+    state->space_count = box_size.row * box_size.col;
+    state->open_count = state->space_count - SNAKE_START_SIZE;
     
     // Output the game screen to the terminal
     fflush(stdout);

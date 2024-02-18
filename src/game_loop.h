@@ -25,7 +25,8 @@ struct GameState
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
     size_t head;                // Index of .snake[] where the head is
     size_t tail;                // Index of .snake[] where the tail is
-    size_t open_count;         // Count of non-blocking spaces on the snake's area
+    size_t space_count;         // Total amount of spaces inside the snake's area
+    size_t open_count;          // Count of non-blocking spaces on the snake's area
     GameCoord screen_size;      // Maximum coordinates on the terminal screen
     GameCoord position;         // Coordinate of the screen where the snake's head is
     GameCoord position_min;     // Smallest screen coordinate where the snake's head can go
