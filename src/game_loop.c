@@ -176,12 +176,13 @@ GameState* game_init()
     }
 
     // Region in which the snake may spawn
+    // (there must be a minimum of 1 empty space between the snake's tail and the wall)
     const GameCoord region_min = (GameCoord){
-        .row = 1 + safety_distance,
+        .row = safety_distance,
         .col = 1 + safety_distance,
     };
     const GameCoord region_max = (GameCoord){
-        .row = state->screen_size.row - safety_distance,
+        .row = 1 + state->screen_size.row - safety_distance,
         .col = state->screen_size.col - safety_distance,
     };
     const GameCoord region_size = {
