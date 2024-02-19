@@ -197,6 +197,40 @@ unsigned int xrand()
     #endif
 }
 
+// Check if there is any input to be read from stdin
+bool input_available()
+{
+    #ifdef _WIN32
+
+    // TO DO: this check on Windows...
+
+    #else
+    fd_set descriptors = {0};
+    FD_ZERO(&descriptors);
+    FD_SET(STDIN_FILENO, &descriptors);
+    struct timeval timeout = {0};
+    const int status = select(STDIN_FILENO+1, &descriptors, NULL, NULL, &timeout);
+    if (status == 1) return true;
+
+    #endif // _WIN32
+
+    return false;
+}
+
+// Get a character from stdin without blocking if there is no input available
+// (return EOF in such case)
+int getchar_nb()
+{
+    if ( input_available() )
+    {
+        return getchar();
+    }
+    else
+    {
+        return EOF;
+    }
+}
+
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal)
@@ -224,4 +258,38 @@ void save_collision_grid(GameState *state, const char* path)
         fprintf(f, "\n");
     }
     fclose(f);
+}
+
+// (debugging) Print the corresponding arrow when a direction key is pressed
+void debug_keys()
+{
+    while (true)
+    {
+        SnakeDirection dir = parse_input();
+        switch (dir)
+        {
+            case DIR_UP:
+                printf(u8"↑");
+                fflush(stdout);
+                break;
+            
+            case DIR_DOWN:
+                printf(u8"↓");
+                fflush(stdout);
+                break;
+            
+            case DIR_LEFT:
+                printf(u8"←");
+                fflush(stdout);
+                break;
+            
+            case DIR_RIGHT:
+                printf(u8"→");
+                fflush(stdout);
+                break;
+            
+            default:
+                break;
+        }
+    }
 }

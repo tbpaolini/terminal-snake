@@ -7,7 +7,7 @@
 
 typedef struct GameState GameState;
 typedef struct GameCoord GameCoord;
-typedef enum SnakeDirection {DIR_UP, DIR_DOWN, DIR_RIGHT, DIR_LEFT} SnakeDirection;
+typedef enum SnakeDirection {DIR_NONE=0, DIR_UP, DIR_DOWN, DIR_RIGHT, DIR_LEFT} SnakeDirection;
 
 // Coordinates on the terminal
 // Notes: 1-indexed, top left is (1,1).

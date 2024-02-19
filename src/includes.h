@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
-#include <signal.h>
+#include <sys/select.h>
 
 #endif // _WIN_32
 

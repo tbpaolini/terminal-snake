@@ -42,9 +42,19 @@ void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset);
 // Note: this function uses the entropy source from the operating system, so seeding is not needed.
 unsigned int xrand();
 
+// Check if there is any input to be read from stdin
+bool input_available();
+
+// Get a character from stdin without blocking if there is no input available
+// (return EOF in such case)
+int getchar_nb();
+
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal);
 
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path);
+
+// (debugging) Print the corresponding arrow when a direction key is pressed
+void debug_keys();

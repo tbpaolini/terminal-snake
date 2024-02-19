@@ -65,3 +65,45 @@ void spawn_food(GameState *state)
         state->food.row, state->food.col
     );
 }
+
+// Get which direction the user has pressed
+SnakeDirection parse_input()
+{
+    SnakeDirection dir = DIR_NONE;
+    
+    char my_char = 0;
+    while ( (my_char = getchar_nb()) != EOF )
+    {
+        // Keep reading the input stream until we find the sequence "ESC O"
+        // (ESC character followed by the letter O character)
+        if (my_char != '\x1b') continue;
+        my_char = getchar();
+        if (my_char != 'O') continue;
+        my_char = getchar();
+
+        // The next character after the sequence tells us which direction was pressed
+        switch (my_char)
+        {
+            case 'A':
+                dir = DIR_UP;
+                break;
+            
+            case 'B':
+                dir = DIR_DOWN;
+                break;
+            
+            case 'C':
+                dir = DIR_RIGHT;
+                break;
+            
+            case 'D':
+                dir = DIR_LEFT;
+                break;
+            
+            default:
+                continue;
+        }
+    }
+    
+    return dir;
+}
