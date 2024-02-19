@@ -113,6 +113,10 @@ GameState* game_init()
         sizeof(typeof(**state->arena))
     );
 
+    // Double-ended queue for storing the coordinates of where each snake part is
+    state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->space_count);
+    size_t sid = 0; // Current index on 'state->snake[]'
+
     /* Drawing a rectangle along the terminal's borders */
     
     // Draw the top border
@@ -264,6 +268,8 @@ GameState* game_init()
     // (the snake's color is green)
     printf(MOVE_CURSOR(%zu,%zu) TEXT_GREEN "%s", pos.row, pos.col, snake_head);
     state->arena[pos.row - 1][pos.col - 1] = true;
+    state->head = sid;
+    state->snake[sid++] = (GameCoord){pos.row, pos.col};
 
     // Draw the body
     for (size_t i = 0; i < (SNAKE_START_SIZE - 1); i++)
@@ -271,7 +277,9 @@ GameState* game_init()
         move_coord(&pos, state->direction, -1);
         printf(MOVE_CURSOR(%zu,%zu) "%s", pos.row, pos.col, snake_body);
         state->arena[pos.row - 1][pos.col - 1] = true;
+        state->snake[sid++] = (GameCoord){pos.row, pos.col};
     }
+    state->tail = sid - 1;
 
     // Count the amount of spaces on the snake's area
     const GameCoord box_size = {
