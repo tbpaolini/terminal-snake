@@ -114,69 +114,6 @@ bool move_snake(GameState* state, SnakeDirection dir)
 {
     if (dir == DIR_NONE) return false;
     const SnakeDirection old_dir = state->direction;
-    printf(MOVE_CURSOR(%zu,%zu), state->position.row, state->position.col);
-
-    if (old_dir == dir)
-    {
-        if (dir == DIR_UP || dir == DIR_DOWN)
-        {
-            printf(TEXT_GREEN SNAKE_VERTICAL);
-        }
-        else
-        {
-            printf(TEXT_GREEN SNAKE_HORIZONTAL);
-        }
-    }
-    else
-    {
-        switch (old_dir)
-        {
-            case DIR_UP:
-                if (dir ==  DIR_LEFT)
-                {
-                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
-                }
-                else
-                {
-                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
-                }
-                break;
-            
-            case DIR_DOWN:
-                if (dir ==  DIR_LEFT)
-                {
-                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
-                }
-                else
-                {
-                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
-                }
-                break;
-            
-            case DIR_LEFT:
-                if (dir ==  DIR_UP)
-                {
-                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
-                }
-                else
-                {
-                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
-                }
-                break;
-            
-            case DIR_RIGHT:
-                if (dir ==  DIR_UP)
-                {
-                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
-                }
-                else
-                {
-                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
-                }
-                break;
-            
-        }
-    }
     
     move_coord(&state->position, dir, 1);
     const size_t my_row = state->position.row;
@@ -187,4 +124,82 @@ bool move_snake(GameState* state, SnakeDirection dir)
     state->arena[my_row-1][my_col-1] = true;
 
     return has_collided;
+}
+
+// Bend the snake's body to the direction it is turning to.
+// (this function draws the appropriate shape on the point the snake bent)
+void snake_turning(GameState* state, SnakeDirection new_dir)
+{
+    // Move the terminal's cursor to where the snake's head is
+    printf(MOVE_CURSOR(%zu,%zu), state->position.row, state->position.col);
+    const SnakeDirection old_dir = state->direction;
+
+    if (old_dir == new_dir) // Snake did not change its direction
+    {
+        if (new_dir == DIR_UP || new_dir == DIR_DOWN)
+        {
+            printf(TEXT_GREEN SNAKE_VERTICAL);
+        }
+        else if (new_dir == DIR_LEFT || new_dir == DIR_RIGHT)
+        {
+            printf(TEXT_GREEN SNAKE_HORIZONTAL);
+        }
+        else printf(TEXT_GREEN "?");
+    }
+    else // Snake turned to another direction
+    {
+        switch (old_dir)
+        {
+            case DIR_UP:
+                if (new_dir == DIR_LEFT)
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
+                }
+                else if (new_dir ==  DIR_RIGHT)
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
+                }
+                else printf(TEXT_GREEN "?");
+                break;
+            
+            case DIR_DOWN:
+                if (new_dir == DIR_LEFT)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
+                }
+                else if (new_dir == DIR_RIGHT)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
+                }
+                else printf(TEXT_GREEN "?");
+                break;
+            
+            case DIR_LEFT:
+                if (new_dir == DIR_UP)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
+                }
+                else if (new_dir == DIR_DOWN)
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
+                }
+                else printf(TEXT_GREEN "?");
+                break;
+            
+            case DIR_RIGHT:
+                if (new_dir == DIR_UP)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
+                }
+                else if (new_dir == DIR_UP)
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
+                }
+                break;
+            
+            default:
+                printf(TEXT_GREEN "?");
+                break;
+        }
+    }
 }
