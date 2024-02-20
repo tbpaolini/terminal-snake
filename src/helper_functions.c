@@ -202,7 +202,9 @@ bool input_available()
 {
     #ifdef _WIN32
 
-    // TO DO: this check on Windows...
+    DWORD input_count = 0;
+    WINDOWS_ERROR_CHECK(GetNumberOfConsoleInputEvents(state_ptr->input_handle, &input_count));
+    if (input_count > 0) return true;
 
     #else
     fd_set descriptors = {0};
