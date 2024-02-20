@@ -4,7 +4,7 @@
 void spawn_food(GameState *state)
 {
     // Randomly pick one of then open spaces
-    size_t random_id = xrand() % state->open_count;
+    size_t random_id = xrand() % state->free_area;
 
     // Current position
     size_t row = state->position_min.row - 1;
@@ -23,7 +23,7 @@ void spawn_food(GameState *state)
     
     // Count the empty spaces on the grid in order to find the randomly chosen space
     // Note: this loop is going to run at least once, even if 'random_id' is zero.
-    //       It's going to run up to 'state->open_count' times.
+    //       It's going to run up to 'state->free_area' times.
     while (true)
     {
         // Check if we are still inside the snake's area
@@ -139,7 +139,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
     state->arena[my_row-1][my_col-1] = true;
 
     // Push the new head's coordinate into the start of the queue
-    state->head = (state->head > 0) ? state->head - 1 : state->space_count - 1; // Wrap around the buffer
+    state->head = (state->head > 0) ? state->head - 1 : state->total_area - 1; // Wrap around the buffer
     state->snake[state->head] = state->position;
 
     // Draw the head at the new position
@@ -156,7 +156,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
         printf(MOVE_CURSOR(%zu,%zu) " ", pos.row, pos.col);
 
         // Remove the old coordinate from the queue
-        state->tail = (state->tail > 0) ? state->tail - 1 : state->space_count -1;  // Wrap around the buffer
+        state->tail = (state->tail > 0) ? state->tail - 1 : state->total_area -1;  // Wrap around the buffer
     }
     else
     {
@@ -164,7 +164,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
         spawn_food(state);
         
         // There is one less empty space since the snake has grown
-        state->open_count -= 1;
+        state->free_area -= 1;
     }
 
     fflush(stdout);

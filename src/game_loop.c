@@ -169,11 +169,11 @@ GameState* game_init()
         .row = state->position_max.row - state->position_min.col + 1,
         .col = state->position_max.col - state->position_min.col + 1,
     };
-    state->space_count = box_size.row * box_size.col;
-    state->open_count = state->space_count - SNAKE_START_SIZE;
+    state->total_area = box_size.row * box_size.col;
+    state->free_area = state->total_area - SNAKE_START_SIZE;
 
     // Double-ended queue for storing the coordinates of where each snake part is
-    state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->space_count);
+    state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->total_area);
     size_t sid = 0; // Current index on 'state->snake[]'
 
     // Distance from the borders of the window in which the snake may not spawn
