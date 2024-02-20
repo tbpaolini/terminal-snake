@@ -46,7 +46,7 @@ GameState* game_init()
     // the input is sent immediately after a key is pressed,
     // and ignore mouse input.
     state->input_mode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
-    state->input_mode &= (~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT & ~ENABLE_MOUSE_INPUT);
+    state->input_mode &= (~ENABLE_INSERT_MODE & ~ENABLE_LINE_INPUT & ~ENABLE_ECHO_INPUT & ~ENABLE_MOUSE_INPUT &~ENABLE_WINDOW_INPUT);
     WINDOWS_ERROR_CHECK(SetConsoleMode(state->input_handle, state->input_mode));
     
     // For the terminal's window, disable: maximizing button, resizing, horizontal and vertical scrollbars
@@ -294,4 +294,11 @@ GameState* game_init()
     
     // Output the game screen to the terminal
     fflush(stdout);
+    
+    #ifdef _WIN32
+    // On Windows, this prevents events other than key presses from cluttering the input buffer.
+    // This is needed because we are checking the event count in order to determine if there's a key to be parsed.
+    // We do not really need to handle those other events on this program.
+    FlushConsoleInputBuffer(state->input_handle);
+    #endif
 }
