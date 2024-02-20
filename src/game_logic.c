@@ -113,15 +113,38 @@ SnakeDirection parse_input()
 bool move_snake(GameState* state, SnakeDirection dir)
 {
     if (dir == DIR_NONE) return false;
-    const SnakeDirection old_dir = state->direction;
     
+    // Bend the snake's body to the new direction
+    snake_turning(state, dir);
+    
+    // Move the snake's head to the new coordinate
     move_coord(&state->position, dir, 1);
     const size_t my_row = state->position.row;
     const size_t my_col = state->position.col;
     
+    // Check if the snake hit an wall or itself
     const bool has_collided = state->arena[my_row-1][my_col-1];
+
+    // Check if a food pellet was obtained
     const bool got_food = (state->food.row == my_row) && (state->food.col == my_col);
+
+    // Flag the new head's position as occupied
     state->arena[my_row-1][my_col-1] = true;
+
+    // Push the new head's coordinate into the start of the queue
+    state->head = (state->head > 0) ? state->head - 1 : state->space_count - 1; // Wrap around the buffer
+    state->snake[state->head] = state->position;
+
+    // Pop the snake's tail from the end of the queue if no food was obtained
+    if (!got_food)
+    {
+        // Flag the old tail's position as empty
+        const GameCoord pos = state->snake[state->tail];
+        state->arena[pos.row-1][pos.col-1] = false;
+
+        // Remove the old coordinate from the queue
+        state->tail = (state->tail > 0) ? state->tail - 1 : state->space_count -1;  // Wrap around the buffer
+    }
 
     return has_collided;
 }
