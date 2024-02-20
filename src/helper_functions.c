@@ -295,3 +295,23 @@ void debug_keys()
         }
     }
 }
+
+// (debugging) Move the snake freely with the keyboard
+void debug_movement()
+{
+    while (true)
+    {
+        SnakeDirection dir = parse_input();
+        if (dir)
+        {
+            move_snake(state_ptr, dir);
+        }
+
+        // Sleep for 5 milliseconds before checking for input again
+        #ifdef _WIN32
+        Sleep(5);
+        #else
+        usleep(5000);
+        #endif
+    }
+}

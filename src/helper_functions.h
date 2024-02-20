@@ -58,3 +58,6 @@ void save_collision_grid(GameState *state, const char* path);
 
 // (debugging) Print the corresponding arrow when a direction key is pressed
 void debug_keys();
+
+// (debugging) Move the snake freely with the keyboard
+void debug_movement();
