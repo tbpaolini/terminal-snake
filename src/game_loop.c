@@ -113,10 +113,6 @@ GameState* game_init()
         sizeof(typeof(**state->arena))
     );
 
-    // Double-ended queue for storing the coordinates of where each snake part is
-    state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->space_count);
-    size_t sid = 0; // Current index on 'state->snake[]'
-
     /* Drawing a rectangle along the terminal's borders */
     
     // Draw the top border
@@ -167,6 +163,18 @@ GameState* game_init()
         .row = state->screen_size.row - (SCREEN_MARGIN + 1),
         .col = state->screen_size.col - (SCREEN_MARGIN + 1),
     };
+
+    // Count the amount of spaces on the snake's area
+    const GameCoord box_size = {
+        .row = state->position_max.row - state->position_min.col + 1,
+        .col = state->position_max.col - state->position_min.col + 1,
+    };
+    state->space_count = box_size.row * box_size.col;
+    state->open_count = state->space_count - SNAKE_START_SIZE;
+
+    // Double-ended queue for storing the coordinates of where each snake part is
+    state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->space_count);
+    size_t sid = 0; // Current index on 'state->snake[]'
 
     // Distance from the borders of the window in which the snake may not spawn
     const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
@@ -280,14 +288,6 @@ GameState* game_init()
         state->snake[sid++] = (GameCoord){pos.row, pos.col};
     }
     state->tail = sid - 1;
-
-    // Count the amount of spaces on the snake's area
-    const GameCoord box_size = {
-        .row = state->position_max.row - state->position_min.col + 1,
-        .col = state->position_max.col - state->position_min.col + 1,
-    };
-    state->space_count = box_size.row * box_size.col;
-    state->open_count = state->space_count - SNAKE_START_SIZE;
 
     // Spawn the first food pellet
     spawn_food(state);

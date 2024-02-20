@@ -164,7 +164,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
         spawn_food(state);
         
         // There is one less empty space since the snake has grown
-        state->space_count -= 1;
+        state->open_count -= 1;
     }
 
     fflush(stdout);
