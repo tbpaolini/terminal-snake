@@ -8,7 +8,7 @@
 int main(int argc, char **argv)
 {
     game_init();
-    getchar();
+    debug_movement();
     
     return 0;
 }
