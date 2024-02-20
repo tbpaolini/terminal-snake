@@ -248,6 +248,7 @@ void snake_turning(GameState* state, SnakeDirection new_dir)
                 {
                     printf(TEXT_GREEN SNAKE_TOP_RIGHT);
                 }
+                else printf(TEXT_GREEN "?");
                 break;
             
             default:
