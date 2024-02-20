@@ -162,6 +162,9 @@ bool move_snake(GameState* state, SnakeDirection dir)
     {
         // Generate a new food pellet after one was eaten
         spawn_food(state);
+        
+        // There is one less empty space since the snake has grown
+        state->space_count -= 1;
     }
 
     fflush(stdout);
@@ -241,7 +244,7 @@ void snake_turning(GameState* state, SnakeDirection new_dir)
                 {
                     printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
                 }
-                else if (new_dir == DIR_UP)
+                else if (new_dir == DIR_DOWN)
                 {
                     printf(TEXT_GREEN SNAKE_TOP_RIGHT);
                 }
