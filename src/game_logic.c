@@ -107,3 +107,84 @@ SnakeDirection parse_input()
     
     return dir;
 }
+
+// Move the snake by one unit in a given direction
+// Return 'true' if the snake has collided with something, 'false' otherwise.
+bool move_snake(GameState* state, SnakeDirection dir)
+{
+    if (dir == DIR_NONE) return false;
+    const SnakeDirection old_dir = state->direction;
+    printf(MOVE_CURSOR(%zu,%zu), state->position.row, state->position.col);
+
+    if (old_dir == dir)
+    {
+        if (dir == DIR_UP || dir == DIR_DOWN)
+        {
+            printf(TEXT_GREEN SNAKE_VERTICAL);
+        }
+        else
+        {
+            printf(TEXT_GREEN SNAKE_HORIZONTAL);
+        }
+    }
+    else
+    {
+        switch (old_dir)
+        {
+            case DIR_UP:
+                if (dir ==  DIR_LEFT)
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
+                }
+                else
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
+                }
+                break;
+            
+            case DIR_DOWN:
+                if (dir ==  DIR_LEFT)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
+                }
+                else
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
+                }
+                break;
+            
+            case DIR_LEFT:
+                if (dir ==  DIR_UP)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_LEFT);
+                }
+                else
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_LEFT);
+                }
+                break;
+            
+            case DIR_RIGHT:
+                if (dir ==  DIR_UP)
+                {
+                    printf(TEXT_GREEN SNAKE_BOTTOM_RIGHT);
+                }
+                else
+                {
+                    printf(TEXT_GREEN SNAKE_TOP_RIGHT);
+                }
+                break;
+            
+        }
+    }
+    
+    move_coord(&state->position, dir, 1);
+    const size_t my_row = state->position.row;
+    const size_t my_col = state->position.col;
+    
+    const bool has_collided = state->arena[my_row-1][my_col-1];
+    const bool got_food = (state->food.row == my_row) && (state->food.col == my_col);
+    state->arena[my_row-1][my_col-1] = true;
+
+    return has_collided;
+}
