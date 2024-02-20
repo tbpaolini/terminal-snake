@@ -143,7 +143,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
     state->snake[state->head] = state->position;
 
     // Draw the head at the new position
-    draw_snake_head(state);
+    draw_snake_head(state, has_collided);
 
     // Pop the snake's tail from the end of the queue if no food was obtained
     if (!got_food)
@@ -261,30 +261,40 @@ void snake_turning(GameState* state, SnakeDirection new_dir)
 }
 
 // Draw the snake's head according to its direction and position
-void draw_snake_head(GameState* state)
+void draw_snake_head(GameState* state, bool has_collided)
 {
     printf(MOVE_CURSOR(%zu,%zu), state->position.row, state->position.col);
+
+    // The head's color is red in case of collision, green otherwise
+    if (has_collided)
+    {
+        printf(TEXT_RED);
+    }
+    else
+    {
+        printf(TEXT_GREEN);
+    }
     
     switch (state->direction)
     {
         case DIR_RIGHT:
-            printf(TEXT_GREEN SNAKE_HEAD_RIGHT);
+            printf(SNAKE_HEAD_RIGHT);
             break;
         
         case DIR_LEFT:
-            printf(TEXT_GREEN SNAKE_HEAD_LEFT);
+            printf(SNAKE_HEAD_LEFT);
             break;
         
         case DIR_DOWN:
-            printf(TEXT_GREEN SNAKE_HEAD_DOWN);
+            printf(SNAKE_HEAD_DOWN);
             break;
         
         case DIR_UP:
-            printf(TEXT_GREEN SNAKE_HEAD_UP);
+            printf(SNAKE_HEAD_UP);
             break;
         
         default:
-            printf(TEXT_GREEN "?");
+            printf("?");
             break;
     }
 }

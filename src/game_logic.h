@@ -17,4 +17,5 @@ bool move_snake(GameState* state, SnakeDirection dir);
 void snake_turning(GameState* state, SnakeDirection new_dir);
 
 // Draw the snake's head according to its direction and position
-void draw_snake_head(GameState* state);
+// (draw in red in case of collision)
+void draw_snake_head(GameState* state, bool has_collided);
