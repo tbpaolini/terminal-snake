@@ -121,6 +121,9 @@ bool move_snake(GameState* state, SnakeDirection dir)
 {
     if (dir == DIR_NONE) return false;
     
+    // Prevent the snake from moving backwards
+    correct_direction(state, &dir);
+    
     // Bend the snake's body to the new direction
     snake_turning(state, dir);
     
@@ -177,6 +180,31 @@ bool move_snake(GameState* state, SnakeDirection dir)
     #endif
 
     return has_collided;
+}
+
+// Prevent the snake from moving backwards
+// This function flips the new direction in case it's going to the opposite direction of the snake.
+extern inline void correct_direction(GameState* state, SnakeDirection* new_dir)
+{
+    const SnakeDirection old_dir = state->direction;
+    switch (old_dir)
+    {
+        case DIR_UP:
+            if (*new_dir == DIR_DOWN) *new_dir = DIR_UP;
+            break;
+        
+        case DIR_DOWN:
+            if (*new_dir == DIR_UP) *new_dir = DIR_DOWN;
+            break;
+        
+        case DIR_RIGHT:
+            if (*new_dir == DIR_LEFT) *new_dir = DIR_RIGHT;
+            break;
+        
+        case DIR_LEFT:
+            if (*new_dir == DIR_RIGHT) *new_dir = DIR_LEFT;
+            break;
+    }
 }
 
 // Bend the snake's body to the direction it is turning to.

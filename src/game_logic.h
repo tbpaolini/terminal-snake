@@ -12,6 +12,10 @@ SnakeDirection parse_input();
 // Return 'true' if the snake has collided with something, 'false' otherwise.
 bool move_snake(GameState* state, SnakeDirection dir);
 
+// Prevent the snake from moving backwards
+// This function flips the new direction in case it's going to the opposite direction of the snake.
+inline void correct_direction(GameState* state, SnakeDirection* new_dir);
+
 // Bend the snake's body to the direction it is turning to.
 // (this function draws the appropriate shape on the point the snake bent)
 void snake_turning(GameState* state, SnakeDirection new_dir);
