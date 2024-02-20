@@ -135,6 +135,9 @@ bool move_snake(GameState* state, SnakeDirection dir)
     state->head = (state->head > 0) ? state->head - 1 : state->space_count - 1; // Wrap around the buffer
     state->snake[state->head] = state->position;
 
+    // Draw the head at the new position
+    draw_snake_head(state);
+
     // Pop the snake's tail from the end of the queue if no food was obtained
     if (!got_food)
     {
@@ -142,10 +145,19 @@ bool move_snake(GameState* state, SnakeDirection dir)
         const GameCoord pos = state->snake[state->tail];
         state->arena[pos.row-1][pos.col-1] = false;
 
+        // Delete the tail's end from the screen
+        printf(MOVE_CURSOR(%zu,%zu) " ", pos.row, pos.col);
+
         // Remove the old coordinate from the queue
         state->tail = (state->tail > 0) ? state->tail - 1 : state->space_count -1;  // Wrap around the buffer
     }
+    else
+    {
+        // Generate a new food pellet after one was eaten
+        spawn_food(state);
+    }
 
+    fflush(stdout);
     return has_collided;
 }
 
@@ -224,5 +236,37 @@ void snake_turning(GameState* state, SnakeDirection new_dir)
                 printf(TEXT_GREEN "?");
                 break;
         }
+    }
+
+    // Store the new direction
+    state->direction = new_dir;
+}
+
+// Draw the snake's head according to its direction and position
+void draw_snake_head(GameState* state)
+{
+    printf(MOVE_CURSOR(%zu,%zu), state->position.row, state->position.col);
+    
+    switch (state->direction)
+    {
+        case DIR_RIGHT:
+            printf(TEXT_GREEN SNAKE_HEAD_RIGHT);
+            break;
+        
+        case DIR_LEFT:
+            printf(TEXT_GREEN SNAKE_HEAD_LEFT);
+            break;
+        
+        case DIR_DOWN:
+            printf(TEXT_GREEN SNAKE_HEAD_DOWN);
+            break;
+        
+        case DIR_UP:
+            printf(TEXT_GREEN SNAKE_HEAD_UP);
+            break;
+        
+        default:
+            printf(TEXT_GREEN "?");
+            break;
     }
 }

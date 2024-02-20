@@ -15,3 +15,6 @@ bool move_snake(GameState* state, SnakeDirection dir);
 // Bend the snake's body to the direction it is turning to.
 // (this function draws the appropriate shape on the point the snake bent)
 void snake_turning(GameState* state, SnakeDirection new_dir);
+
+// Draw the snake's head according to its direction and position
+void draw_snake_head(GameState* state);
