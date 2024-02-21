@@ -211,6 +211,39 @@ int getchar_nb()
     }
 }
 
+// Get the amount of microseconds since an unespecified point of time
+// The difference between two calls of this function should give how long has passed.
+uint64_t clock_usec()
+{
+    #ifdef _WIN32
+    // At the first time this function runs, get the amount of counts per second
+    static bool got_freq = false;
+    static LARGE_INTEGER freq;
+    if (!got_freq)
+    {
+        WINDOWS_ERROR_CHECK(QueryPerformanceFrequency(&freq));
+        got_freq = true;
+    }
+
+    // Get the amount of counts
+    LARGE_INTEGER counter;
+    WINDOWS_ERROR_CHECK(QueryPerformanceCounter(&counter));
+
+    // Calculate and return the amount of microseconds
+    return (counter.QuadPart * 1000000) / freq.QuadPart;
+    
+    #else // Linux
+    
+    // Get the time in nanoseconds
+    struct timespec counter;
+    LINUX_ERROR_CHECK(clock_gettime(CLOCK_MONOTONIC, &counter));
+
+    // Calculate and return the amount of microseconds
+    return ((counter.tv_sec * 1000000000) + counter.tv_nsec) / 1000;
+    
+    #endif
+}
+
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal)

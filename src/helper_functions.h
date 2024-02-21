@@ -49,6 +49,10 @@ bool input_available();
 // (return EOF in such case)
 int getchar_nb();
 
+// Get the amount of microseconds since an unespecified point of time
+// The difference between two calls of this function should give how long has passed.
+uint64_t clock_usec();
+
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal);
