@@ -242,6 +242,16 @@ void restore_term(int signal)
     fflush(stdout);
 }
 
+// Discard all the data remaining on the standard input stream
+void flush_stdin()
+{
+    #ifdef _WIN32
+    FlushConsoleInputBuffer(state_ptr->input_handle);
+    #else
+    tcflush(STDIN_FILENO, TCIFLUSH);
+    #endif
+}
+
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path)
 {

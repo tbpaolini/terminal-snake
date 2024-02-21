@@ -86,31 +86,32 @@ SnakeDirection parse_input()
         {
             case 'A':
                 dir = DIR_UP;
-                break;
+                goto parsing_done;
             
             case 'B':
                 dir = DIR_DOWN;
-                break;
+                goto parsing_done;
             
             case 'C':
                 dir = DIR_RIGHT;
-                break;
+                goto parsing_done;
             
             case 'D':
                 dir = DIR_LEFT;
-                break;
+                goto parsing_done;
             
             default:
                 continue;
         }
     }
     
-    #ifdef _WIN32
-    // On Windows, this prevents events other than key presses from cluttering the input buffer.
-    // This is needed because we are checking the event count in order to determine if there's a key to be parsed.
-    // We do not really need to handle those other events on this program.
-    FlushConsoleInputBuffer(state_ptr->input_handle);
-    #endif
+    parsing_done:
+    
+    // Flush the remaining input
+    flush_stdin();
+    /* Note: If the user keeps the key pressed, a lot of inputs might get buffered.
+       Parsing that input could slow down the program, and it is not really
+       necessary to process them once we already got a direction. */
     
     return dir;
 }
