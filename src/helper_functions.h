@@ -36,7 +36,7 @@ void* xmalloc(size_t size);
 void** alloc_2Darray(size_t width, size_t height, size_t element_size);
 
 // Move in-place a coordinate by a certain offset in the given direction
-void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset);
+inline void move_coord(GameCoord *coord, SnakeDirection dir, size_t offset);
 
 // Generate a pseudo-random unsigned integer from 0 to UINT_MAX
 // Note: this function uses the entropy source from the operating system, so seeding is not needed.
