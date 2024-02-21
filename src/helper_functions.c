@@ -244,6 +244,20 @@ uint64_t clock_usec()
     #endif
 }
 
+// Sleep the program for the given amount of microseconds
+void sleep_usec(uint64_t time)
+{
+    #ifdef _WIN32
+    uint64_t start = clock_usec();
+    Sleep(time / 1000);
+    while (clock_usec() - start < time) continue;
+
+    #else // Linux
+    usleep(time);
+
+    #endif
+}
+
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)
 void restore_term(int signal)
