@@ -53,8 +53,8 @@ int getchar_nb();
 // The difference between two calls of this function should give how long has passed.
 uint64_t clock_usec();
 
-// Sleep the program for the given amount of microseconds
-void sleep_usec(uint64_t time);
+// Return after the given amount of microseconds
+void wait_usec(uint64_t time);
 
 // Reset the terminal size to the original values
 // Note: this function is meant to be called when the terminal window is resized on Linux (SIGWINCH signal)

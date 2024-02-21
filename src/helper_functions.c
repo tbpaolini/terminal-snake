@@ -244,18 +244,21 @@ uint64_t clock_usec()
     #endif
 }
 
-// Sleep the program for the given amount of microseconds
-void sleep_usec(uint64_t time)
+// Return after the given amount of microseconds
+void wait_usec(uint64_t time)
 {
-    #ifdef _WIN32
     uint64_t start = clock_usec();
-    Sleep(time / 1000);
+
+    if (time > SLEEP_MARGIN)
+    {
+        #ifdef _WIN32
+        SleepEx( (time - SLEEP_MARGIN) / 1000, FALSE );
+        #else // Linux
+        usleep(time - SLEEP_MARGIN);
+        #endif
+    }
+    
     while (clock_usec() - start < time) continue;
-
-    #else // Linux
-    usleep(time);
-
-    #endif
 }
 
 // Reset the terminal size to the original values

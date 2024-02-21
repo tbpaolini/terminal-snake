@@ -4,6 +4,7 @@
 
 #define SCREEN_MARGIN 1     // Distance that the game box is drawn from the terminal's borders
 #define SNAKE_START_SIZE 4  // Initial size of the snake
+#define SLEEP_MARGIN 15000  // Program wakes up this amount of microseconds before the start of the next frame
 
 typedef struct GameState GameState;
 typedef struct GameCoord GameCoord;
