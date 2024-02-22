@@ -346,7 +346,7 @@ void draw_snake_head(GameState* state, bool has_collided)
 void print_snake_size(GameState *state)
 {
     printf(
-        MOVE_CURSOR(%zu,%zu) TEXT_GRAY "Size: " TEXT_WHITE "%zu",
+        MOVE_CURSOR(%zu,%d) TEXT_GRAY "Size: " TEXT_WHITE "%zu",
         state->screen_size.row, SCREEN_MARGIN + 1, state->size
     );
 }
