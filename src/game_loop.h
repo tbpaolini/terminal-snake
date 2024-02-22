@@ -4,6 +4,8 @@
 
 #define SCREEN_MARGIN 1     // Distance that the game box is drawn from the terminal's borders
 #define SNAKE_START_SIZE 4  // Initial size of the snake
+#define SNAKE_START_SPEED 3     // Snake's speed at the start of the game (unit: spaces per second)
+#define SNAKE_FINAL_SPEED 15    // Snake's speed can increase up to this value as the game progresses
 #define SLEEP_MARGIN 15000  // Program wakes up this amount of microseconds before the start of the next frame
 
 typedef struct GameState GameState;
@@ -34,7 +36,8 @@ struct GameState
     GameCoord position_max;     // Biggest screen coordinate where the snake's head can go
     GameCoord food;             // Screen coordinate of the food pellet
     SnakeDirection direction;   // Direction the snake is moving to
-    uint32_t sleep_time;        // Duration of each drawn frame
+    uint64_t tick_time_start;   // Duration (in microseconds) at the game's start for each drawn frame 
+    uint64_t tick_time_final;   // The sleep time can decrease up to this value as the game progresses
     uint64_t score;             // Player's score
 
     #ifdef _WIN32

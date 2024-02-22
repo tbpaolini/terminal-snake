@@ -313,6 +313,11 @@ GameState* game_init()
 
     // Spawn the first food pellet
     spawn_food(state);
+
+    // Calculate the time between game ticks
+    // (after the game state is updated, the program will sleep for the remaining of this time before updating it again)
+    state->tick_time_start = 1000000 / SNAKE_START_SPEED;
+    state->tick_time_final = 1000000 / SNAKE_FINAL_SPEED;
     
     // Output the game screen to the terminal
     fflush(stdout);
