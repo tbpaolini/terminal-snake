@@ -169,6 +169,9 @@ bool move_snake(GameState* state, SnakeDirection dir)
         
         // There is one less empty space since the snake has grown
         state->free_area -= 1;
+
+        // The snake grows when getting the food pellet
+        state->size += 1;
     }
 
     fflush(stdout);

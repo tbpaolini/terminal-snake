@@ -28,6 +28,7 @@ struct GameState
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
     size_t head;                // Index of .snake[] where the head is
     size_t tail;                // Index of .snake[] where the tail is
+    size_t size;                // Current size of the snake
     size_t total_area;          // Total amount of spaces inside the snake's area
     size_t free_area;           // Count of non-blocking spaces on the snake's area
     GameCoord screen_size;      // Maximum coordinates on the terminal screen
@@ -38,7 +39,6 @@ struct GameState
     SnakeDirection direction;   // Direction the snake is moving to
     uint64_t tick_time_start;   // Duration (in microseconds) at the game's start for each drawn frame 
     uint64_t tick_time_final;   // The sleep time can decrease up to this value as the game progresses
-    uint64_t score;             // Player's score
 
     #ifdef _WIN32
     // Handles and modes for the terminal on Windows
@@ -61,3 +61,6 @@ struct GameState
 
 // Set-up the game state and draw the initial screen
 GameState* game_init();
+
+// MAIN LOOP: check for input and update the game state
+void game_mainloop(GameState* state);
