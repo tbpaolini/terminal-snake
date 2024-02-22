@@ -26,3 +26,6 @@ void draw_snake_head(GameState* state, bool has_collided);
 
 // Display at the bottom of the screen the current snake's size
 void print_snake_size(GameState *state);
+
+// Print the game over message
+void game_over(GameState *state);

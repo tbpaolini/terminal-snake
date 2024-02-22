@@ -357,3 +357,18 @@ void print_snake_size(GameState *state)
         state->screen_size.row, SCREEN_MARGIN + 1, state->size
     );
 }
+
+// Print the game over message
+void game_over(GameState *state)
+{
+    print_snake_size(state); // Has the side effect of moving the cursor to after the size value
+            
+    if (state->free_area == 0)
+    {
+        printf(TEXT_YELLOW "  CONGRATULATIONS!");
+    }
+    else printf(TEXT_RED "  GAME OVER!");
+    
+    printf(TEXT_CYAN " Press any key to exit...");
+    fflush(stdout);
+}
