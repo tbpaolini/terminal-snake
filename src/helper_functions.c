@@ -180,20 +180,11 @@ bool input_available()
 {
     #ifdef _WIN32
 
-    DWORD input_count = 0;
-    WINDOWS_ERROR_CHECK(GetNumberOfConsoleInputEvents(state_ptr->input_handle, &input_count));
-    if (input_count > 0)
-    {
-        if (input_count > 512) input_count = 512;
-        INPUT_RECORD inputs[(size_t)input_count];
-        DWORD count = 0;
-        PeekConsoleInput(state_ptr->input_handle, inputs, (size_t)input_count, &count);
-        for (size_t i = 0; i < count; i++)
-        {
-            // Check if a key got pressed
-            if (inputs[i].EventType == KEY_EVENT) return true;
-        }
-    }
+    if (kbhit()) return true;
+    /* Note: I have tried quite a few approaches using the modern Win32 API,
+       but none fully worked and they were quite cumbersome.
+       Fortunately the old <conio.h> from MS DOS days came to the rescue! :-)
+    */
 
     #else
     fd_set descriptors = {0};
