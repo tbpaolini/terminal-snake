@@ -327,11 +327,5 @@ GameState* game_init()
     
     // Output the game screen to the terminal
     fflush(stdout);
-    
-    #ifdef _WIN32
-    // On Windows, this prevents events other than key presses from cluttering the input buffer.
-    // This is needed because we are checking the event count in order to determine if there's a key to be parsed.
-    // We do not really need to handle those other events on this program.
-    FlushConsoleInputBuffer(state->input_handle);
-    #endif
+
 }
