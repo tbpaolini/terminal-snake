@@ -3,6 +3,13 @@
 // Spawn a food pellet at a random empty space
 void spawn_food(GameState *state)
 {
+    // Return if there are no empty spaces for the food to be spawned
+    if (state->free_area == 0)
+    {
+        state->food = (GameCoord){(size_t)-1, (size_t)-1};
+        return;
+    }
+    
     // Randomly pick one of then open spaces
     size_t random_id = xrand() % state->free_area;
 
