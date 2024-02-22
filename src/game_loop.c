@@ -314,6 +314,9 @@ GameState* game_init()
     // Keep track of the snake's size
     state->size = SNAKE_START_SIZE;
 
+    // Display the snake's size
+    print_snake_size(state);
+
     // Spawn the first food pellet
     spawn_food(state);
 

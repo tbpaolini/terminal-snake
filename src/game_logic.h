@@ -23,3 +23,6 @@ void snake_turning(GameState* state, SnakeDirection new_dir);
 // Draw the snake's head according to its direction and position
 // (draw in red in case of collision)
 void draw_snake_head(GameState* state, bool has_collided);
+
+// Display at the bottom of the screen the current snake's size
+void print_snake_size(GameState *state);

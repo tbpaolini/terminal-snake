@@ -179,6 +179,9 @@ bool move_snake(GameState* state, SnakeDirection dir)
 
         // The snake grows when getting the food pellet
         state->size += 1;
+
+        // Update the size counter that is shown on the screen
+        print_snake_size(state);
     }
 
     fflush(stdout);
@@ -337,4 +340,13 @@ void draw_snake_head(GameState* state, bool has_collided)
             printf("?");
             break;
     }
+}
+
+// Display at the bottom of the screen the current snake's size
+void print_snake_size(GameState *state)
+{
+    printf(
+        MOVE_CURSOR(%zu,%zu) TEXT_GRAY "Size: " TEXT_WHITE "%zu",
+        state->screen_size.row, SCREEN_MARGIN + 1, state->size
+    );
 }
