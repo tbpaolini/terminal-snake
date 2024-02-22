@@ -79,14 +79,21 @@ SnakeDirection parse_input()
     SnakeDirection dir = DIR_NONE;
     
     char my_char = 0;
-    while ( (my_char = getchar_nb()) != EOF )
+    while (my_char != EOF)
     {
+        my_char = getchar_nb();
+        
         // Keep reading the input stream until we find the sequence "ESC O"
         // (ESC character followed by the letter O character)
         if (my_char != '\x1b') continue;
         my_char = getchar();
         if (my_char != 'O') continue;
         my_char = getchar();
+
+        /* Note: The program locks waiting for input in case the user press the ESC key.
+           This was an oversight on the above code, but I am keeping it as a "pause" feature
+           because I really liked it :-)
+        */
 
         // The next character after the sequence tells us which direction was pressed
         switch (my_char)
