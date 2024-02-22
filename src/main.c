@@ -7,8 +7,8 @@
 
 int main(int argc, char **argv)
 {
-    game_init();
-    debug_movement();
+    GameState* state = game_init();
+    game_mainloop(state);
     
     return 0;
 }

@@ -328,4 +328,53 @@ GameState* game_init()
     // Output the game screen to the terminal
     fflush(stdout);
 
+    return state;
+}
+
+// MAIN LOOP: check for input and update the game state
+void game_mainloop(GameState* state)
+{
+    // Wait for the first game frame
+    wait_usec(state->tick_time_start);
+    
+    // The time between game ticks keeps decreasing up to this amount as the snake grows
+    const uint64_t max_time_mod = state->tick_time_start - state->tick_time_final;
+    while (true)
+    {
+        // Keep track of how long it took to update the game state
+        const uint64_t start_time = clock_usec();
+        
+        // Get which direction key the user has pressed
+        SnakeDirection dir = parse_input();
+
+        // The snake accelerates if the user has pressed the same direction the snake is moving
+        const bool accelerate = (dir == state->direction);
+        if (dir == DIR_NONE) dir = state->direction;
+
+        // Move the snake in the current direction, while updating the game state accordingly.
+        // Then check if the snake has collided with an wall or itself.
+        const bool has_collided = move_snake(state, dir);
+
+        // It is game over if the snake has collided or there are no more empty spaces
+        if (has_collided || state->free_area == 0)
+        {
+            game_over(state);
+            getchar();  // Wait for the user to press any key to exit
+            return;
+        }
+        
+        // The snake's speed increase as it grows
+        const uint64_t time_mod = (state->size * max_time_mod) / state->total_area;
+
+        // Calculate how long before the next iteration of the loop
+        uint64_t frame_duration = state->tick_time_start - time_mod;
+        if (accelerate) frame_duration = frame_duration / 2;
+        
+        // Wait through the remaining time
+        const uint64_t elapsed_time = clock_usec() - start_time;
+        if (elapsed_time < frame_duration)
+        {
+            wait_usec(frame_duration - elapsed_time);
+        }
+    }
 }
