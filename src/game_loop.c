@@ -1,7 +1,7 @@
 #include "includes.h"
 
 // Set-up the game state and draw the initial screen
-// 'speed' is a value from 1 to 9 for setting the initial snake's speed.
+// 'speed' is a value from 1 to 12 for setting the initial snake's speed.
 // 5 is the default speed. 1 is half of the default and 9 is double of the default.
 // Other values are a linear interpolation between those points.
 GameState* game_init(unsigned int speed)
@@ -327,6 +327,29 @@ GameState* game_init(unsigned int speed)
     // (after the game state is updated, the program will sleep for the remaining of this time before updating it again)
     state->tick_time_start = 1000000 / SNAKE_START_SPEED;
     state->tick_time_final = 1000000 / SNAKE_FINAL_SPEED;
+
+    // Clamp the game speed to the range [1, 12]
+    if (speed < 1) speed = 1;
+    if (speed > 12) speed = 12;
+
+    /* Apply the speed modifiers */
+
+    if (speed < 5)  // Snake goes slower than the default
+    {
+        const uint64_t delta_s = (state->tick_time_start * 2) - state->tick_time_start;
+        state->tick_time_start += (delta_s * (5 - speed)) / 4;
+
+        const uint64_t delta_f = (state->tick_time_final * 2) - state->tick_time_final;
+        state->tick_time_final += (delta_f * (5 - speed)) / 4;
+    }
+    else if (speed > 5) // Snake goes faster than the default
+    {
+        const uint64_t delta_s = state->tick_time_start - (state->tick_time_start / 2);
+        state->tick_time_start -= (delta_s * (speed - 5)) / 4;
+
+        const uint64_t delta_f = state->tick_time_final - (state->tick_time_final / 2);
+        state->tick_time_final -= (delta_f * (speed - 5)) / 4;
+    }
     
     // Output the game screen to the terminal
     fflush(stdout);
