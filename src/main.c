@@ -7,7 +7,8 @@
 
 int main(int argc, char **argv)
 {
-    GameState* state = game_init();
+    unsigned int speed = parse_speed(argc, argv);
+    GameState* state = game_init(speed);
     game_mainloop(state);
     game_close(state);
     

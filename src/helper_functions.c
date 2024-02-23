@@ -301,6 +301,38 @@ bool parse_uint(const char* string, unsigned int* out)
     return false;
 }
 
+// Parse the speed value from the program's arguments
+// Note: program exits on failure
+unsigned int parse_speed(int argc, char** argv)
+{
+    if (argc > 1)
+    {
+        if (argc == 2)
+        {
+            unsigned int out;
+            if (parse_uint(argv[1], &out))
+            {
+                if (out >= 1 && out <= 9) return out;
+                else goto fail;
+            }
+            else goto fail;
+        }
+        else
+        {
+            fail:
+            printf(
+                "Please pass a value from 1 to 9 as the only argument to this program in order to set the game's speed.\n\n"
+                "Example:\n\t%s 3\n\n"
+                "5 is the default speed, 1 is the half of it, 9 is the double of it.\n",
+                argv[0]
+            );
+            exit(ERR_INVALID_ARGS);
+        }
+    }
+    
+    return 5;
+}
+
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path)
 {

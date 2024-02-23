@@ -1,7 +1,10 @@
 #include "includes.h"
 
 // Set-up the game state and draw the initial screen
-GameState* game_init()
+// 'speed' is a value from 1 to 9 for setting the initial snake's speed.
+// 5 is the default speed. 1 is half of the default and 9 is double of the default.
+// Other values are a linear interpolation between those points.
+GameState* game_init(unsigned int speed)
 {
     // Reset the terminal to its default properties when the program exits
     atexit(&cleanup);         // Run our clean-up routine on exit

@@ -68,6 +68,10 @@ void flush_stdin();
 //       The string must end after the last digit, and start with a digit or blank spaces.
 bool parse_uint(const char* string, unsigned int* out);
 
+// Parse the speed value from the program's arguments
+// Note: program exits on failure
+unsigned int parse_speed(int argc, char** argv);
+
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path);
 
