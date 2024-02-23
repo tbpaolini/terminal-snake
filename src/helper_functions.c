@@ -268,7 +268,7 @@ void wait_usec(uint64_t time)
 void restore_term(int signal)
 {
     if (!state_ptr) return;
-    printf(RESIZE_SCREEN(%zu,%zu), state_ptr->screen_size.row, state_ptr->screen_size.col);
+    printf(RESIZE_SCREEN(%zu,%zu) HIDE_CURSOR, state_ptr->screen_size.row, state_ptr->screen_size.col);
     fflush(stdout);
 }
 
