@@ -324,7 +324,10 @@ unsigned int parse_speed(int argc, char** argv)
                 "Please pass a value from 1 to 12 as the only argument to this program in order to set the game's speed.\n\n"
                 "Example:\n\t%s 10\n\n"
                 "The greater the value, the faster the snake moves.\n"
-                "5 is the default speed. 1 is half of it, 9 is twice it.\n",
+                "5 is the default speed. 1 is half of it, 9 is twice it.\n\n"
+                "This game was programmed by Tiago Becerra Paolini, and is licensed under the MIT License.\n"
+                "Author's e-mail: tpaolini@gmail.com\n"
+                "Source code:     https://github.com/tbpaolini/terminal-snake\n",
                 argv[0]
             );
             exit(ERR_INVALID_ARGS);
