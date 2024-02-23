@@ -312,7 +312,7 @@ unsigned int parse_speed(int argc, char** argv)
             unsigned int out;
             if (parse_uint(argv[1], &out))
             {
-                if (out >= 1 && out <= 9) return out;
+                if (out >= 1 && out <= 12) return out;
                 else goto fail;
             }
             else goto fail;
@@ -321,9 +321,10 @@ unsigned int parse_speed(int argc, char** argv)
         {
             fail:
             printf(
-                "Please pass a value from 1 to 9 as the only argument to this program in order to set the game's speed.\n\n"
-                "Example:\n\t%s 3\n\n"
-                "5 is the default speed, 1 is the half of it, 9 is the double of it.\n",
+                "Please pass a value from 1 to 12 as the only argument to this program in order to set the game's speed.\n\n"
+                "Example:\n\t%s 10\n\n"
+                "The greater the value, the faster the snake moves.\n"
+                "5 is the default speed. 1 is half of it, 9 is twice it.\n",
                 argv[0]
             );
             exit(ERR_INVALID_ARGS);
