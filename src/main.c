@@ -9,6 +9,7 @@ int main(int argc, char **argv)
 {
     GameState* state = game_init();
     game_mainloop(state);
+    game_close(state);
     
     return 0;
 }

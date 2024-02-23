@@ -64,3 +64,6 @@ GameState* game_init();
 
 // MAIN LOOP: check for input and update the game state
 void game_mainloop(GameState* state);
+
+// Return to the main terminal screen, print the size, and free the memory used by the game
+void game_close(GameState* state);

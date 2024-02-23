@@ -377,3 +377,30 @@ void game_mainloop(GameState* state)
         }
     }
 }
+
+// Return to the main terminal screen, print the size, and free the memory used by the game
+void game_close(GameState* state)
+{
+    // Print the snake's size on exit
+    printf(MAIN_SCREEN);
+    if (state->free_area == 0)
+    {
+        printf(TEXT_GREEN "CONGRATULATIONS:" COLOR_RESET " Snake overflow!\n");
+    }
+    printf(TEXT_YELLOW "Final size:" COLOR_RESET " %zu\n", state->size);
+    
+    // Reset the terminal's properties to the original and free the allocated memory
+    cleanup();
+    free(state->arena);
+    free(state->snake);
+    free(state);
+    state_ptr = NULL;
+
+    #ifdef _WIN32
+    // Whether virtual terminal sequences were already enabled on Windows console
+    windows_vt_seq = false;
+    #else
+    // Whether the program has already changed the attributes of the terminal on Linux
+    linux_term_flags_set = false;
+    #endif // _WIN32
+}
