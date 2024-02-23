@@ -282,6 +282,25 @@ void flush_stdin()
     #endif
 }
 
+// Convert a null terminated string to an unsigned integer
+// Note: On success it returns 'true' and stores the result on 'out'.
+//       The string must end after the last digit, and start with a digit or blank spaces.
+bool parse_uint(const char* string, unsigned int* out)
+{
+    if (*string == '\0') return false;
+    
+    char* end = NULL;
+    unsigned int value = strtoul(string, &end, 10);
+    
+    if (end && *end == '\0')
+    {
+        *out = value;
+        return true;
+    }
+    
+    return false;
+}
+
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path)
 {

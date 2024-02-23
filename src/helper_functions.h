@@ -63,6 +63,11 @@ void restore_term(int signal);
 // Discard all the data remaining on the standard input stream
 void flush_stdin();
 
+// Convert a null terminated string to an unsigned integer
+// Note: On success it returns 'true' and stores the result on 'out'.
+//       The string must end after the last digit, and start with a digit or blank spaces.
+bool parse_uint(const char* string, unsigned int* out);
+
 // (debugging) Save the current collision grid to a text file
 void save_collision_grid(GameState *state, const char* path);
 
