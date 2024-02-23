@@ -105,6 +105,9 @@ GameState* game_init(unsigned int speed)
     // Then make its background black, its text light grey, enable keyboard input, and hide the cursor.
     printf(ALT_SCREEN BG_BLACK TEXT_GRAY CLEAR_SCREEN KP_APP_MODE CK_APP_MODE HIDE_CURSOR);
 
+    // Change the window's title to "Snake Game"
+    printf(ESC "]0;" "Snake Game" "\x07");
+
     // Set the output stream to fully buffered so it is only drawn when we flush it
     setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
 
