@@ -278,7 +278,7 @@ void flush_stdin()
     #ifdef _WIN32
     FlushConsoleInputBuffer(state_ptr->input_handle);
     #else
-    tcflush(STDIN_FILENO, TCIFLUSH);
+    __fpurge(stdin);
     #endif
 }
 

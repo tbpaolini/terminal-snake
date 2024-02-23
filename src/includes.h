@@ -27,6 +27,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <sys/select.h>
+#include <stdio_ext.h>
 
 #endif // _WIN_32
 
