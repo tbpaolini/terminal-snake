@@ -359,7 +359,6 @@ void game_mainloop(GameState* state)
         if (has_collided || state->free_area == 0)
         {
             game_over(state);
-            getchar();  // Wait for the user to press any key to exit
             return;
         }
         

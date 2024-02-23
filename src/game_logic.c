@@ -369,6 +369,11 @@ void game_over(GameState *state)
     }
     else printf(TEXT_RED "  GAME OVER!");
     
-    printf(TEXT_CYAN " Press any key to exit...");
+    printf(TEXT_CYAN "  Press any key to exit...\a"); // '\a' makes a notification sound on the terminal
     fflush(stdout);
+
+    // Wait a little without taking input so the user does not accidentally exit at the end
+    wait_usec(330000);  // 0.33 seconds
+    flush_stdin();
+    getchar();  // Wait for the user to press any key to exit
 }
