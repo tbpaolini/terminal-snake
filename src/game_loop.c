@@ -294,6 +294,9 @@ GameState* game_init(unsigned int speed)
         case DIR_UP:
             snake_head = SNAKE_HEAD_UP;
             break;
+        
+        default:
+            break;
     }
 
     /* Draw the snake */

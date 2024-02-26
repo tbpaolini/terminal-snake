@@ -225,6 +225,9 @@ extern inline void correct_direction(GameState* state, SnakeDirection* new_dir)
         case DIR_LEFT:
             if (*new_dir == DIR_RIGHT) *new_dir = DIR_LEFT;
             break;
+        
+        default:
+            break;
     }
 }
 

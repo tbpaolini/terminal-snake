@@ -157,6 +157,9 @@ extern inline void move_coord(GameCoord *coord, SnakeDirection dir, size_t offse
         case DIR_LEFT:
             coord->col -= offset;
             break;
+        
+        default:
+            break;
     }
 }
 
