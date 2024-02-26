@@ -3,4 +3,7 @@ bin/**
 *.o
 *.out
 *.exe
+*.obj
+*.pdb
+*.ilk
 src/*.txt

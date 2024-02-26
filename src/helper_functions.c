@@ -12,7 +12,7 @@ bool linux_term_flags_set = false;
 #endif // _WIN32
 
 // Reset the terminal and its window back to their original states
-void cleanup()
+void cleanup(void)
 {
     // Exit the game screen then return to the main terminal screen
     #ifdef _WIN32

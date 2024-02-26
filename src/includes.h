@@ -2,6 +2,11 @@
 
 #ifdef _WIN32
 #define _CRT_RAND_S /* Enable the 'rand_s()' function on Windows */
+    #ifdef _MSC_VER
+    // Macros to "enable" some keywords that the MSVC compiler does not support
+    #define typeof __typeof__
+    #define _Noreturn __declspec(noreturn)
+    #endif  // _MSC_VER
 #endif // _WIN32
 
 // Standard headers

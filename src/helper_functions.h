@@ -14,7 +14,7 @@ extern bool linux_term_flags_set;
 #endif // _WIN32
 
 // Reset the terminal and its window back to their original states
-void cleanup();
+void cleanup(void);
 
 // Prints a formatted string as an error then exit the program with the given status code
 // Note: "Error: " (in red) is added before the message, and a line break is added after the message.
