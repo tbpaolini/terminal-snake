@@ -6,6 +6,7 @@
 #define SNAKE_START_SIZE 4  // Initial size of the snake
 #define SNAKE_START_SPEED 3     // Snake's speed at the start of the game (unit: spaces per second)
 #define SNAKE_FINAL_SPEED 15    // Snake's speed can increase up to this value as the game progresses
+#define SNAKE_ACCEL_FACTOR 2    // Snake's speed is multiplied by this value when pressing the direction the snake is facing
 #define SLEEP_MARGIN 15000  // Program wakes up this amount of microseconds before the start of the next frame
 
 typedef struct GameState GameState;

@@ -411,7 +411,7 @@ void game_mainloop(GameState* state)
 
         // Calculate how long before the next iteration of the loop
         uint64_t frame_duration = state->tick_time_start - time_mod;
-        if (accelerate) frame_duration = frame_duration / 2;
+        if (accelerate) frame_duration = frame_duration / SNAKE_ACCEL_FACTOR;
         
         // Wait through the remaining time
         const uint64_t elapsed_time = clock_usec() - start_time;
