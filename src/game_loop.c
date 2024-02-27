@@ -420,6 +420,7 @@ void game_close(GameState* state)
         printf(TEXT_GREEN "CONGRATULATIONS:" COLOR_RESET " Snake overflow!\n");
     }
     printf(TEXT_YELLOW "Final size:" COLOR_RESET " %zu\n", state->size);
+    fflush(stdout);
     
     // Reset the terminal's properties to the original and free the allocated memory
     cleanup();
