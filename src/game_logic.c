@@ -147,8 +147,12 @@ bool move_snake(GameState* state, SnakeDirection dir)
     const size_t my_row = state->position.row;
     const size_t my_col = state->position.col;
     
+    // Coordinate of the snake's tail
+    const GameCoord tail = state->snake[state->tail];
+    
     // Check if the snake hit an wall or itself
-    const bool has_collided = state->arena[my_row-1][my_col-1];
+    // (do not collide with the tail because it is moving away from its current position)
+    const bool has_collided = state->arena[my_row-1][my_col-1] && (my_row != tail.row && my_col != tail.col);
 
     // Check if a food pellet was obtained
     const bool got_food = (state->food.row == my_row) && (state->food.col == my_col);
@@ -159,9 +163,6 @@ bool move_snake(GameState* state, SnakeDirection dir)
     // Push the new head's coordinate into the start of the queue
     state->head = (state->head > 0) ? state->head - 1 : state->total_area - 1; // Wrap around the buffer
     state->snake[state->head] = state->position;
-
-    // Draw the head at the new position
-    draw_snake_head(state, has_collided);
 
     // Pop the snake's tail from the end of the queue if no food was obtained
     if (!got_food)
@@ -190,6 +191,10 @@ bool move_snake(GameState* state, SnakeDirection dir)
         // Update the size counter that is shown on the screen
         print_snake_size(state);
     }
+
+    // Draw the head at the new position
+    // (it is being drawn last in order to avoid being cleared in case the head ends up in the tail's old position)
+    draw_snake_head(state, has_collided);
 
     fflush(stdout);
 
