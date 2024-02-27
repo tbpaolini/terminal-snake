@@ -399,7 +399,7 @@ void game_mainloop(GameState* state)
         if (has_collided || state->free_area == 0)
         {
             game_over(state);
-            return;
+            break;
         }
         
         // The snake's speed increase as it grows
