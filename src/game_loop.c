@@ -370,7 +370,15 @@ void game_mainloop(GameState* state)
     wait_usec(state->tick_time_start);
     
     // The time between game ticks keeps decreasing up to this amount as the snake grows
-    const uint64_t max_time_mod = state->tick_time_start - state->tick_time_final;
+    uint64_t max_time_mod = state->tick_time_start - state->tick_time_final;
+
+    // How much has currently the tick timer decreased from the initial value
+    uint64_t time_mod = (state->size * max_time_mod) / state->total_area;
+
+    // Size of the snake at the beginning of the frame
+    // ('time_mod' is going to be updated whenever the snake grows)
+    size_t old_size = state->size;
+    
     while (true)
     {
         // Keep track of how long it took to update the game state
@@ -395,7 +403,11 @@ void game_mainloop(GameState* state)
         }
         
         // The snake's speed increase as it grows
-        const uint64_t time_mod = (state->size * max_time_mod) / state->total_area;
+        if (state->size != old_size)
+        {
+            time_mod = (state->size * max_time_mod) / state->total_area;
+            old_size = state->size;
+        }
 
         // Calculate how long before the next iteration of the loop
         uint64_t frame_duration = state->tick_time_start - time_mod;
