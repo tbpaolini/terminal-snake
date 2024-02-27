@@ -376,7 +376,10 @@ void game_over(GameState *state)
     fflush(stdout);
 
     // Wait a little without taking input so the user does not accidentally exit at the end
-    wait_usec(330000);  // 0.33 seconds
+    wait_usec(750000);  // 0.75 seconds
     flush_stdin();
+    #ifdef _WIN32
+    while(input_available()) getchar(); // On Windows, stdin does not necessarily is fully cleared right after the previous function returns
+    #endif // _Win32
     getchar();  // Wait for the user to press any key to exit
 }
