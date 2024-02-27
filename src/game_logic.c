@@ -152,7 +152,7 @@ bool move_snake(GameState* state, SnakeDirection dir)
     
     // Check if the snake hit an wall or itself
     // (do not collide with the tail because it is moving away from its current position)
-    const bool has_collided = state->arena[my_row-1][my_col-1] && (my_row != tail.row && my_col != tail.col);
+    const bool has_collided = state->arena[my_row-1][my_col-1] && (my_row != tail.row || my_col != tail.col);
 
     // Check if a food pellet was obtained
     const bool got_food = (state->food.row == my_row) && (state->food.col == my_col);
