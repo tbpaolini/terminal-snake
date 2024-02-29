@@ -89,6 +89,21 @@ GameState* game_init(unsigned int speed)
 
     #endif // _WIN_32
 
+    // Distance from the borders of the window in which the snake may not spawn
+    const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
+    const size_t size_cutoff = 2 * safety_distance;
+
+    // Check if the terminal is big enough for the game
+    if ( (state->screen_size.row <= size_cutoff) || (state->screen_size.col <= size_cutoff) )
+    {
+        printf_error_exit(
+            ERR_TINY_TERMINAL,
+            "Terminal's size is too small for the game, "
+            "it should be at least %zu by %zu characters.",
+            size_cutoff+1, size_cutoff+1
+        );
+    }
+
     // Top left coordinates of the board
     const GameCoord board_start = {
         SCREEN_MARGIN + 1,
@@ -181,21 +196,6 @@ GameState* game_init(unsigned int speed)
     // Double-ended queue for storing the coordinates of where each snake part is
     state->snake = xmalloc(sizeof(typeof(*state->snake)) * state->total_area);
     size_t sid = 0; // Current index on 'state->snake[]'
-
-    // Distance from the borders of the window in which the snake may not spawn
-    const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
-    const size_t size_cutoff = 2 * safety_distance;
-
-    // Check if the terminal is big enough for the game
-    if ( (state->screen_size.row <= size_cutoff) || (state->screen_size.col <= size_cutoff) )
-    {
-        printf_error_exit(
-            ERR_TINY_TERMINAL,
-            "Terminal's size is too small for the game, "
-            "it should be at least %zu by %zu characters.",
-            size_cutoff+1, size_cutoff+1
-        );
-    }
 
     // Region in which the snake may spawn
     // (there must be a minimum of 1 empty space between the snake's tail and the wall)
