@@ -247,7 +247,7 @@ GameState* game_init(unsigned int speed)
     
     // The snake will spawn facing away from the closest wall in its direction
     const GameCoord mid_point = {state->position_max.row / 2, state->position_max.col / 2,};
-    const char* snake_body = "?";
+    const char* snake_body = NULL;
     if (is_horizontal)
     {
         snake_body = SNAKE_HORIZONTAL;
