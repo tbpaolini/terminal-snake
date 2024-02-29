@@ -2,8 +2,8 @@
 
 ![terminal-snake](https://github.com/tbpaolini/terminal-snake/assets/85261542/b312b540-9e59-4bd7-9299-490ac5d13d2a)
 
-* [Download the executable for Windows](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.2/snake.exe) (200 KB)
-* [Download the executable for Linux](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.2/snake) (902 KB)
+* [Download the executable for Windows](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.3/snake.exe) (200 KB)
+* [Download the executable for Linux](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.3/snake) (902 KB)
 
 ## About
 
