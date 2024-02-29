@@ -212,29 +212,8 @@ GameState* game_init(unsigned int speed)
         .col = region_max.col - region_min.col + 1,
     };
 
-    // Seed the pseudo-random number generator
-    // Note: On Windows it is seeded automatically.
-    #ifndef _WIN32
-    FILE* dev_urandom = fopen("/dev/urandom", "rb");
-    unsigned int seed = 0;
-    size_t read_count = 0;
-    if (dev_urandom)
-    {
-        read_count = fread(&seed, sizeof(seed), 1, dev_urandom);
-        fclose(dev_urandom);
-    }
-    if (read_count != 1)
-    {
-        printf_error_exit(
-            errno,
-            "Could not seed the pseudo-random number generator with bytes from '/dev/urandom' (%s).",
-            strerror(errno)
-        );
-    }
-    srandom(seed);
-    #endif
-
     // Randomize the snake's starting coordinate
+    // Note: xrand() already seeds itself using the operating system's entropy source
     const size_t row_delta = xrand() % region_size.row;
     const size_t col_delta = xrand() % region_size.col;
     state->position = (GameCoord){
