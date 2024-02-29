@@ -105,11 +105,17 @@ void _Noreturn windows_error_exit(const char* file_name, int line_number)
 // Note: program exits on failure.
 void* xmalloc(size_t size)
 {
+    if (size == 0)
+    {
+        printf_error_exit(ERR_INVALID_ARGS, "Tried to allocate zero bytes of memory.");
+    }
+    
     void* ptr = calloc(1, size);
     if (!ptr)
     {
         printf_error_exit(ERR_NO_MEMORY, "Not enough memory.");
     }
+
     return ptr;
 }
 
@@ -118,6 +124,11 @@ void* xmalloc(size_t size)
 // Note: the returned pointer can be passed to free() to get the entire array freed at once.
 void** alloc_2Darray(size_t width, size_t height, size_t element_size)
 {
+    if (width == 0 || height == 0)
+    {
+        printf_error_exit(ERR_INVALID_ARGS, "2D array must not have an width or a height of zero.");
+    }
+    
     const size_t col_size = sizeof(void*) * height;
     const size_t row_size = width * element_size;
     const size_t total_size = col_size + (height * row_size);
