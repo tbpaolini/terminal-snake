@@ -1,9 +1,19 @@
+# Ignore files without an extension
+*
+!*.*
+!*/
+
+# Ignore the following folders
 bin/**
 .vscode/**
+
+# Ignore artifacts from compilation and executables
 *.o
 *.out
 *.exe
 *.obj
 *.pdb
 *.ilk
+
+# Ignore plain text files on the source folder
 src/*.txt
