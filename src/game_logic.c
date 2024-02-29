@@ -78,7 +78,7 @@ SnakeDirection parse_input()
 {
     SnakeDirection dir = DIR_NONE;
     
-    char my_char = 0;
+    int my_char = 0;
     while (my_char != EOF)
     {
         my_char = getchar_nb();
