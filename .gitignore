@@ -14,6 +14,7 @@ bin/**
 *.obj
 *.pdb
 *.ilk
+*.xml
 
 # Ignore plain text files on the source folder
 src/*.txt
