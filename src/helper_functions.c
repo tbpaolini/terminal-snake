@@ -365,9 +365,11 @@ unsigned int parse_speed(int argc, char** argv)
                 "Example:\n\t%s 10\n\n"
                 "The greater the value, the faster the snake moves.\n"
                 "5 is the default speed. 1 is half of it, 9 is twice it.\n\n"
-                "This game was programmed by Tiago Becerra Paolini, and is licensed under the MIT License.\n"
+                "This game was programmed by Tiago Becerra Paolini, and is licensed under the MIT License.\n\n"
                 "Author's e-mail: tpaolini@gmail.com\n"
-                "Source code:     https://github.com/tbpaolini/terminal-snake\n",
+                "Source code: https://github.com/tbpaolini/terminal-snake\n"
+                "Version: 1.0.3\n"
+                "Built on: " __DATE__ " " __TIME__ "\n",
                 argv[0]
             );
             exit(ERR_INVALID_ARGS);
