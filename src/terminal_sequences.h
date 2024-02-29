@@ -21,6 +21,10 @@ Example:
 #define CLEAR_SCREEN CSI "2J"       // Erase all characters on the terminal screen
 #define RESIZE_SCREEN(row,col) CSI "8"#row";"#col"t"    // Set the terminal's size to the given amount of rows and columns
 
+// Set the text on the title bar of the terminal's window
+// Note: the argument should be an string literal (it can also be a printf format string).
+#define SET_WINDOW_TITLE(string) ESC "]0;" string "\x07"
+
 // Control of the cursor
 #define MOVE_CURSOR(row,column) CSI #row";"#column"H"   // Move the text cursor to a given row and column (1-indexed)
 #define HIDE_CURSOR CSI "?25l"      // Do not display the text cursor
