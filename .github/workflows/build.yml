@@ -1,0 +1,46 @@
+name: Building the project
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            os_name: Windows
+            in: src\main.c
+            out: snake.exe
+            cc: cl
+            cflags: /O2 /MT /GL /utf-8 /Fe:snake.exe /link user32.lib
+          - os: ubuntu-latest
+            os_name: Linux
+            in: src/main.c
+            out: snake
+            cc: gcc
+            cflags: -O3 -static -o snake
+
+    steps:
+    
+    - uses: actions/checkout@master
+    
+    - if: runner.os == 'Windows'
+      name: Setting up the MSVC compiler
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        vsversion: 2022
+        arch: x64
+        sdk: 10.0.22621.0
+        toolset: 14.39.33519
+
+    - name: Compiling for ${{ matrix.os_name }}
+      run: ${{ matrix.cc }} ${{ matrix.in }} ${{ matrix.cflags }}
+
+    - name: Uploading the executable for ${{ matrix.os_name }}
+      uses: actions/upload-artifact@master
+      with:
+        name: Executable for ${{ matrix.os_name }}
+        path: ./${{ matrix.out }}
