@@ -17,7 +17,7 @@ The default speed is 5 if you run the game without any arguments.
 
 The size of the game area is determined by the size of the terminal. So if you want to play with a bigger or smaller area, you can do it by changing the size of your terminal window before starting the game.
 
-## Compiling
+## How to compile
 
 This project makes use of an unity build, which means that you only need to compile the `main.c` file (inside the `src` directory) and then the entire project will be built. No need to set-up some build system. In theory, any compiler that supports the C11 standard (or later) should work. We recommend enabling speed optimizations and statically linking the libraries, since they do not seem to cause any bugs or increase the executable's size too much.
 
@@ -44,11 +44,17 @@ clang src/main.c -o snake.exe -O3 -static
 
 It is worth noting that you are not limited to using those compilers and flags. :-)
 
+### Current compilation status
+
+[![Building the project](https://github.com/tbpaolini/terminal-snake/actions/workflows/build.yml/badge.svg)](https://github.com/tbpaolini/terminal-snake/actions/workflows/build.yml)
+
 ## Technical details
 
 This game is basically implemented using escape sequences, which allow to specify the colors and position for each character on the terminal. Linux typically supports escape sequences out-of-the-box. Windows also supports, but the program needs to enable them first by setting the console flag `ENABLE_VIRTUAL_TERMINAL_PROCESSING`. Actually, Microsoft recommends using escape sequences over their regular Win32 API when manipulating the terminal.
 
 The snake is drawn by precisely controlling where and when the special characters are drawn, and the terminal screen is only updated once per frame. Only the parts of the screen that changed are updated. In order to help with that, a double-ended queue is used for storing the coordinates for all snake's parts: at the beginning of each step the head's coordinate is added the front of the queue, while the tail's coordinate is removed from the back. A 2D array is used as a collision grid, in order to determine if the snake's head got into the same space as another body part or an wall.
+
+On the frames in which the snake gets a pellet, we skip the step in which the snake's tail is popped from the queue, this way the snake grows by one unit. After that, a new pellet randomly spawn on a space inside the game area where there is no part of snake. For this, it is generated a random number between zero and the amount of free spaces minus one, then the free spaces are looped over until the counter of free spaces exceeds the generated value, and the new pellet is placed there. Each empty space has an equal probability of being chosen, this program uses the pseudo-random number generator from the operating system, instead of the standard `rand()`. The generator is seeded with bytes from the entropy source of the OS, instead of seeding with the time.
 
 The snake's speed is tied the update rate of the terminal screen, since the snake is moved every time the screen is updated. The time between updates is controlled during runtime with the precision of microseconds. That is accomplished by sleeping the program until a few milliseconds before the target time, then repeatedly checking if the target time was reached. As the snake gets more pellets, this time gradually decreases, which makes the snake to move faster. Pressing the same direction as the snake halves the time, and the speed value set when launching the game applies a modifier to the time.
 
