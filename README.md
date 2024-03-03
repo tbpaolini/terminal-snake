@@ -47,6 +47,7 @@ It is worth noting that you are not limited to using those compilers and flags. 
 ### Current compilation status
 
 [![Building the project](https://github.com/tbpaolini/terminal-snake/actions/workflows/build.yml/badge.svg)](https://github.com/tbpaolini/terminal-snake/actions/workflows/build.yml)
+[![Security analysis](https://github.com/tbpaolini/terminal-snake/actions/workflows/codeql.yml/badge.svg)](https://github.com/tbpaolini/terminal-snake/actions/workflows/codeql.yml)
 
 ## Technical details
 
