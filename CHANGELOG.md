@@ -1,6 +1,7 @@
 **Version 1.0.4** - *March ??, 2024*:
 - Fixed a potential buffer overflow when displaying an error message on Windows.
 - Changed the input stream to unbuffered, so keyboard input can be parsed faster and so the stream can be cleared more reliably.
+- Handling Ctrl-Break (Windows) and segmentation fault (Windows and Linux), so the terminal also gets restored to its original state in case the program terminates on such circunstances.
 
 **Version 1.0.3** - *February 29th, 2024*:
 - Input parsing no longer breaks if the `char` type is unsiged on a C implementation.
