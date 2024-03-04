@@ -383,6 +383,13 @@ void game_over(GameState *state)
     // Wait a little without taking input so the user does not accidentally exit at the end
     wait_usec(750000);  // 0.75 seconds
     flush_stdin();
-    int input = getchar();  // Wait for the user to press any key to exit
+    #ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable: 6031)  // Disable the "unused return value" warning on the MSVC compiler's analyzer
+    #endif
+    getchar();  // Wait for the user to press any key to exit
+    #ifdef _MSC_VER
+    #pragma warning(pop)
+    #endif
     flush_stdin();  // So any remaining input isn't echoed on the terminal
 }
