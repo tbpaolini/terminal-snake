@@ -1,3 +1,6 @@
+**Version 1.0.4** - *March ??, 2024*:
+- Fixed a potential buffer overflow when displaying an error message on Windows.
+
 **Version 1.0.3** - *February 29th, 2024*:
 - Input parsing no longer breaks if the `char` type is unsiged on a C implementation.
 - Compilation should no longer fail now if the function `__fpurge()` is not available on the target Linux system.

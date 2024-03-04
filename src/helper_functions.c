@@ -74,7 +74,7 @@ void _Noreturn windows_error_exit(const char* file_name, int line_number)
     // Get from the last error code of the Windows API
     const DWORD error_code = GetLastError();
     WCHAR error_message[1024] = {0};
-    const size_t buffer_size = sizeof(error_message) - sizeof(WCHAR);   // Leave space for a NUL terminator at the end
+    const size_t buffer_size = (sizeof(error_message) / sizeof(WCHAR)) - 1; // Leave space for a NUL terminator at the end
 
     // Get the text that describes the error
     DWORD message_size = FormatMessageW(
