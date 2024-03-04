@@ -10,6 +10,9 @@ GameState* game_init(unsigned int speed)
     atexit(&cleanup);         // Run our clean-up routine on exit
     signal(SIGINT, &exit);    // Closing with Ctrl+C
     signal(SIGTERM, &exit);   // Closing through task manager
+    #if defined(_WIN32) && defined(SIGBREAK)
+    signal(SIGBREAK, &exit);  // Closing with Ctrl+Break on Windows
+    #endif // _WIN_32 && SIGBREAK
     signal(SIGSEGV, &exit_segfault);    // Closing due to a segmentation fault (this should never happen)
 
     // Allocate and initialize the game state
