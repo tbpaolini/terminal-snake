@@ -126,6 +126,11 @@ GameState* game_init(unsigned int speed)
     // Set the output stream to fully buffered so it is only drawn when we flush it
     setvbuf(stdout, NULL, _IOFBF, state->screen_size.col * state->screen_size.row * 4);
 
+    // Set the input stream to unbuffered so keyboard input can be parsed faster and be cleared more easily
+    // Notes: We are going to parse input once per frame. Once we successfully parse a key, we clear the remaining data on stdin.
+    //        If stdin was buffered some data could still be on the buffer, which wouldn't be cleared after flushing stdin.
+    setvbuf(stdin, NULL, _IONBF, 0);
+
     // 2D array for the collision grid
     // ('true' means a position where the snake collides with an wall or itself)
     state->arena = (bool**)alloc_2Darray(

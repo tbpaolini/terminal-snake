@@ -34,15 +34,6 @@
 #include <sys/ioctl.h>
 #include <sys/select.h>
 
-// Check if the '__fpurge()' function is available
-// (it should be available on a GNU C Library version 2.2 or later, in the <stdio_ext.h> header)
-#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
-    #if __GLIBC_PREREQ(2,2)
-    #define __FPURGE_AVAILABLE
-    #include <stdio_ext.h>
-    #endif // __GLIBC_PREREQ
-#endif // __GLIBC__
-
 #endif // _WIN_32
 
 // Application's headers

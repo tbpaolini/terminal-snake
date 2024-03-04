@@ -315,8 +315,6 @@ void flush_stdin()
 {
     #ifdef _WIN32
     FlushConsoleInputBuffer(state_ptr->input_handle);
-    #elif defined(__FPURGE_AVAILABLE)   // Using a GNU C Library version 2.2 or later
-    __fpurge(stdin);
     #else
     tcflush(STDIN_FILENO, TCIFLUSH);
     #endif

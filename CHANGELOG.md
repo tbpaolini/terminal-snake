@@ -1,5 +1,6 @@
 **Version 1.0.4** - *March ??, 2024*:
 - Fixed a potential buffer overflow when displaying an error message on Windows.
+- Changed the input stream to unbuffered, so keyboard input can be parsed faster and so the stream can be cleared more reliably.
 
 **Version 1.0.3** - *February 29th, 2024*:
 - Input parsing no longer breaks if the `char` type is unsiged on a C implementation.
