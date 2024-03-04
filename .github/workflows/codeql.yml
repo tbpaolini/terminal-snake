@@ -13,11 +13,11 @@ name: "Security analysis"
 
 on:
   push:
-    branches: [ "master", "development" ]
+    branches: [ '**' ]
   pull_request:
-    branches: [ "master", "development" ]
+    branches: [ '**' ]
   schedule:
-    - cron: '27 5 * * 2'
+    - cron: '30 15 * * 4' # Every Thursday at 15:30
 
 jobs:
   analyze:
@@ -75,7 +75,7 @@ jobs:
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
     - name: Compile the project
-      run: gcc src/main.c -O3 -fsanitize=address,leak,undefined -fanalyzer -Wall -Wpedantic -Werror
+      run: gcc src/main.c -v -g -Og -fsanitize=address,leak,undefined -fanalyzer -Wall -Wpedantic -Werror
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
