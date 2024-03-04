@@ -10,6 +10,7 @@ GameState* game_init(unsigned int speed)
     atexit(&cleanup);         // Run our clean-up routine on exit
     signal(SIGINT, &exit);    // Closing with Ctrl+C
     signal(SIGTERM, &exit);   // Closing through task manager
+    signal(SIGSEGV, &exit_segfault);    // Closing due to a segmentation fault (this should never happen)
 
     // Allocate and initialize the game state
     GameState *state = xmalloc(sizeof(GameState));

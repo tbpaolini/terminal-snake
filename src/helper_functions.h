@@ -16,6 +16,11 @@ extern bool linux_term_flags_set;
 // Reset the terminal and its window back to their original states
 void cleanup(void);
 
+// Signal handler for segmentation fault: reset the terminal then exit.
+// This is for preventing the terminal from remaining on the alternate screen with the changed terminal flags.
+// Needless to say, if this function ends up being called it means there are errors in the code that must be fixed.
+void _Noreturn exit_segfault(int signal);
+
 // Prints a formatted string as an error then exit the program with the given status code
 // Note: "Error: " (in red) is added before the message, and a line break is added after the message.
 void _Noreturn printf_error_exit(int status_code, const char* format, ...);
