@@ -42,6 +42,7 @@
 #include "game_loop.h"
 #include "game_logic.h"
 #include "helper_functions.h"
+#include "key_mapper.h"
 #include "helper_macros.h"
 
 // Error codes

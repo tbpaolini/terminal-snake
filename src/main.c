@@ -18,6 +18,7 @@
 #include "helper_functions.c"
 #include "game_loop.c"
 #include "game_logic.c"
+#include "key_mapper.c"
 
 int main(int argc, char **argv)
 {
