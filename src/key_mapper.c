@@ -824,4 +824,45 @@ static const struct codepair keysymtab[] = {
     { 0x20ac, 0x20ac }, /*                    EuroSign € EURO SIGN */
 };
 
+// Search the keysym table for the code point that corresponds to a keysym
+// If the keysym was found the code point is written to '*ucs' and 'true' is returned.
+// Otherwise, it returns 'false'.
+static inline bool keysymtab_lookup(uint16_t keysym, uint16_t* ucs)
+{
+    // Check if within the range of the legacy keysyms
+    if (keysym < 0x0100 || keysym > 0x20ff) return false;
+
+    // Divide the table in half
+    const int64_t table_size = sizeof(keysymtab) / sizeof(struct codepair);
+    int64_t left = 0;
+    int64_t right = table_size - 1;
+    int64_t middle = right / 2;
+
+    // Perform a binary search for the keysym
+    while (right >= left)
+    {
+        if (keysymtab[middle].keysym == keysym)
+        {
+            // keysym was found
+            *ucs = keysymtab[middle].ucs;
+            return true;
+        }
+        else if (keysymtab[middle].keysym < keysym)
+        {
+            // Cut the lower half of the section
+            left = middle + 1;
+            middle = (left + right) / 2;
+        }
+        else // keysymtab[middle].keysym > keysym
+        {
+            // Cut the upper half of the section
+            right = middle - 1;
+            middle = (left + right) / 2;
+        }
+    }
+    
+    // keysym was not on the table
+    return false;
+}
+
 #endif // _WIN32
