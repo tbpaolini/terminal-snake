@@ -24,8 +24,8 @@
     The logic for converting a keysym to a Unicode value is as follows:
         - for 0x00 <= keysym <= 0xFF, the code point is the same as the keysym.
         - for 0x0100 <= keysym <= 0x20ff, we are going to use a conversion table.
-        - for keysym >= 0x01000100, the codepoint is keysym minus 0x01000000.
-        - keysyms outside of those ranges are invalid.
+        - for 0x01000100 <= keysym <= 0x0110ffff, the codepoint is keysym minus 0x01000000.
+        - keysyms outside of those ranges are not valid Unicode characters.
     
     This logic for converting keysyms comes from here:
     https://gitlab.freedesktop.org/xorg/proto/xproto/-/blob/master/keysymdef.h
@@ -862,6 +862,33 @@ static inline bool keysymtab_lookup(uint16_t keysym, uint16_t* ucs)
     }
     
     // keysym was not on the table
+    return false;
+}
+
+// Convert a keysym to the code point of its character on the Unicode table
+// If successful, return 'true' and write the value to '*codepoint'. Otherwise, return 'false'.
+bool keysym_to_codepoint(uint32_t keysym, uint32_t* codepoint)
+{
+    if (keysym <= 0xFF)
+    {
+        *codepoint = keysym;
+        return true;
+    }
+    else if (keysym <= 0x20ff)
+    {
+        uint16_t ucs = 0;
+        if (keysymtab_lookup(keysym, &ucs))
+        {
+            *codepoint = ucs;
+            return true;
+        }
+    }
+    else if (keysym >= 0x01000100 && keysym <= 0x0110ffff)
+    {
+        *codepoint = keysym - 0x01000000;
+        return true;
+    }
+
     return false;
 }
 
