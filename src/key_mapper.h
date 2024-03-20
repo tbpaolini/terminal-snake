@@ -11,3 +11,14 @@
 
 #include "includes.h"
 
+#ifdef _WIN32
+
+// TO DO: Windows specific functions...
+
+#else
+
+// Convert a keysym to the code point of its character on the Unicode table
+// If successful, return 'true' and write the value to '*codepoint'. Otherwise, return 'false'.
+bool keysym_to_codepoint(uint32_t keysym, uint32_t* codepoint);
+
+#endif // _WIN32
