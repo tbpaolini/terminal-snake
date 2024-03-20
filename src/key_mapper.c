@@ -892,4 +892,102 @@ bool keysym_to_codepoint(uint32_t keysym, uint32_t* codepoint)
     return false;
 }
 
+// Get the keysyms corresponding to the given scancodes using the xmodmap command
+// If successful, return 'true' and write the values to '*out_keysym'. Otherwise, return 'false'.
+// Function takes an array of scancodes and outputs the results to an array of keysyms.
+// The function returns both the lowercase and uppercase versions of the keysym,
+// so `out_keysym` must be at least twice the length of `in_keycode`.
+// The output goes as {lower0, upper0, lower1, upper1, ...}
+// The `count` arguments are the amount of elements in their respective arrays.
+bool get_xmodmap_keysym(
+    const uint32_t *restrict in_scancode, size_t in_count,
+    uint32_t *restrict out_keysym, size_t out_count
+)
+{
+    if (!in_scancode || !out_keysym || in_count == 0 || out_count < in_count * 2) return false;
+    
+    // Array of keycodes
+    uint32_t* keycode = xmalloc(in_count * sizeof(uint32_t));
+    for (size_t i = 0; i < in_count; i++)
+    {
+        // For some reason, the keycodes returned by xmodmap have an offset of 8 from the scancodes,
+        // while for the Linux kernel scancodes == keycodes until around value 85.
+        keycode[i] = in_scancode[i] + 8;
+    }
+
+    // Sort the keycode array in ascending order (Bubble Sort)
+    // Note: we are doing this because xmodmap returns the keycodes in ascending order
+    for (size_t i = 0; i < in_count - 1; i++)
+    {
+        for (size_t j = i + 1; j < in_count; j++)
+        {
+            // For each element (except the last), compare it with each element that comes afterwards
+            if (keycode[i] > keycode[j])
+            {
+                // If the left element is bigger than the right element, swap them
+                uint32_t temp = keycode[i];
+                keycode[i] = keycode[j];
+                keycode[j] = temp;
+            }
+        }
+    }
+
+    // Try running the xmodmap command to get the association between keycodes and keysyms
+    // ("-pk" prints the keymap table, "2> /dev/null" suppesses error messages)
+    FILE* xmap = popen("xmodmap -pk 2> /dev/null", "r");
+
+    // Parse the keysym values from the output of xmodmap
+    uint32_t* keysym = xmalloc(2 * in_count * sizeof(uint32_t));
+    
+    bool success = false;       // Whether all the keysyms have been parsed
+    char buffer[4096] = {0};    // Buffer for storing the lines of the output from xmodmap
+    size_t si = 0;              // Current index on the `keysym[]` array
+    size_t ci = 0;              // Current index on the `keycode[]` array
+
+    while ( (fgets(buffer, sizeof(buffer), xmap) != NULL) && (si < out_count) )
+    {
+        char delim[] = "\t";    // The columns on each line are separated a tab
+        char* token = strtok(buffer, delim);    // Get the first column (keycode)
+        if (!token) continue;
+
+        // Convert the returned keycode string to an 32-bit unsigned integer
+        char* end = token;
+        uint32_t my_keycode = strtoul(token, &end, 10);
+        
+        // If the column's content matches to the keycode
+        if ( end != token && my_keycode == keycode[ci] )
+        {
+            // Get the next two columns
+            // (keysyms in hexadecimal for the lowercase and uppercase versions of the character, respectively)
+            for (size_t i = 0; i < 2; i++)
+            {
+                char* keysym_hex = strtok(NULL, delim);
+                if (!keysym_hex) continue;
+                char* end = keysym_hex;
+                uint32_t value = strtoul(keysym_hex, &end, 16);
+                if (end != keysym_hex) keysym[si++] = value;
+                else goto exit_loop;
+            }
+
+            ci++;   // Move to the next position on the `keycode[]` array
+        }
+    }
+
+    exit_loop:
+    pclose(xmap);
+    if (si == in_count * 2) success = true;
+    
+    // Store the result if we have parsed all the scancodes
+    if (success)
+    {
+        memcpy(out_keysym, keysym, out_count * sizeof(uint32_t));
+    }
+    
+    free(keysym);
+    free(keycode);
+
+    if (success) return true;
+    else return false;
+}
+
 #endif // _WIN32
