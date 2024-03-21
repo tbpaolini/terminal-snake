@@ -33,4 +33,11 @@ bool get_xmodmap_keysym(
     uint32_t *restrict out_keysym, size_t out_count
 );
 
+// Encode an Unicode value into an UTF-8 byte sequence (at most 4 bytes in total)
+// Function returns the amount of bytes written to `*output`,
+// with `output_size` being the buffer size.
+// (a return value of zero means that the input is not a valid code point
+//  or that there was not enough space in the buffer)
+size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size);
+
 #endif // _WIN32
