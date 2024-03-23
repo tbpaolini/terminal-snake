@@ -17,6 +17,9 @@
 
 #else
 
+// Sequence of 4 bytes for stroring a character encoded in UTF-8
+typedef uint8_t utf8_char_t[4];
+
 // Convert a keysym to the code point of its character on the Unicode table
 // If successful, return 'true' and write the value to '*codepoint'. Otherwise, return 'false'.
 bool keysym_to_codepoint(uint32_t keysym, uint32_t* codepoint);
@@ -39,5 +42,18 @@ bool get_xmodmap_keysym(
 // (a return value of zero means that the input is not a valid code point
 //  or that there was not enough space in the buffer)
 size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size);
+
+// Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)
+// Each of the arrays for storing the characters  and their sizes must have at least
+// twice the amount of elements than the scancode array. An size of zero for the
+// output character means that conversion failed for the corresponding scancode.
+// Function returns `true` if all pointers are not NULL and the sizes are big enough, otherwise returns `false`.
+bool scancodes_to_utf8(
+    const uint32_t *restrict in_scancode,   // Array of scancode values
+    size_t in_count,                        // Amount of elements in the scancode array
+    utf8_char_t *restrict out_char,         // Array to store the characters encoded in UTF-8
+    uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
+    size_t out_count                        // Amount of elements in each of the two output arrays
+);
 
 #endif // _WIN32

@@ -1045,4 +1045,54 @@ size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size
     }
 }
 
+// Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)
+// Each of the arrays for storing the characters  and their sizes must have at least
+// twice the amount of elements than the scancode array. An size of zero for the
+// output character means that conversion failed for the corresponding scancode.
+// Function returns `true` if all pointers are not NULL and the sizes are big enough, otherwise returns `false`.
+bool scancodes_to_utf8(
+    const uint32_t *restrict in_scancode,   // Array of scancode values
+    size_t in_count,                        // Amount of elements in the scancode array
+    utf8_char_t *restrict out_char,         // Array to store the characters encoded in UTF-8
+    uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
+    size_t out_count                        // Amount of elements in each of the two output arrays
+)
+{
+    // Check if all the arguments are valid
+    if (!in_scancode || !out_char || !out_char_size || in_count == 0 || out_count < 2 * in_count)
+    {
+        return false;
+    }
+    
+    // Get the key symbols for each scan code
+    out_count = in_count * 2;
+    uint32_t* keysym = xmalloc(out_count * sizeof(uint32_t));
+    const bool success = get_xmodmap_keysym(in_scancode, in_count, keysym, out_count);
+    if (!success)
+    {
+        memset(out_char_size, 0, out_count * sizeof(out_char_size[0]));
+        goto func_cleanup;
+    }
+
+    // Convert each key symbol to an UTF-8 string
+    for (size_t i = 0; i < out_count; i++)
+    {
+        // Get the character's code point
+        uint32_t codepoint = 0;
+        if (keysym_to_codepoint(keysym[i], &codepoint))
+        {
+            // Encode the code point to UTF-8
+            out_char_size[i] = codepoint_to_utf8(codepoint, (uint8_t*)(&out_char[i]), sizeof(out_char[i]));
+        }
+        else
+        {
+            out_char_size[i] = 0;
+        }
+    }
+    
+    func_cleanup:
+    free(keysym);
+    return true;
+}
+
 #endif // _WIN32
