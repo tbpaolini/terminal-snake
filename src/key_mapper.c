@@ -993,9 +993,8 @@ bool get_xmodmap_keysym(
 // Encode an Unicode value into an UTF-8 byte sequence (at most 4 bytes in total)
 // Function returns the amount of bytes written to `*output`,
 // with `output_size` being the buffer size.
-// (a return value of zero means that the input is not a valid code point
-//  or that there was not enough space in the buffer)
-size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size)
+// (a return value of zero means that the input is not a valid code point)
+size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output)
 {
     // Leading byte for sequences of 2 to 4 bytes
     static const uint32_t lead_2 = 0xC0; // 110xxxxx
@@ -1010,33 +1009,29 @@ size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size
 
     if (codepoint <= 0x7F)
     {
-        if (output_size < 1) return 0;
-        output[0] = codepoint;
+        (*output)[0] = codepoint;
         return 1;
     }
     else if (codepoint <= 0x07FF)
     {
-        if (output_size < 2) return 0;
-        output[1] = cont | (codepoint & mask_cont);
-        output[0] = lead_2 | (codepoint >>= 6);
+        (*output)[1] = cont | (codepoint & mask_cont);
+        (*output)[0] = lead_2 | (codepoint >>= 6);
         return 2;
     }
     else if (codepoint <= 0xFFFF)
     {
-        if (output_size < 3) return 0;
         if (codepoint >= 0xD800 && codepoint <= 0xDFFF) return 0;
-        output[2] = cont | (codepoint & mask_cont);
-        output[1] = cont | ((codepoint >>= 6) & mask_cont);
-        output[0] = lead_3 | (codepoint >>= 6);
+        (*output)[2] = cont | (codepoint & mask_cont);
+        (*output)[1] = cont | ((codepoint >>= 6) & mask_cont);
+        (*output)[0] = lead_3 | (codepoint >>= 6);
         return 3;
     }
     else if (codepoint <= 0x10FFFF)
     {
-        if (output_size < 4) return 0;
-        output[3] = cont | (codepoint & mask_cont);
-        output[2] = cont | ((codepoint >>= 6) & mask_cont);
-        output[1] = cont | ((codepoint >>= 6) & mask_cont);
-        output[0] = lead_4 | (codepoint >>= 6);
+        (*output)[3] = cont | (codepoint & mask_cont);
+        (*output)[2] = cont | ((codepoint >>= 6) & mask_cont);
+        (*output)[1] = cont | ((codepoint >>= 6) & mask_cont);
+        (*output)[0] = lead_4 | (codepoint >>= 6);
         return 4;
     }
     else
@@ -1082,7 +1077,7 @@ bool scancodes_to_utf8(
         if (keysym_to_codepoint(keysym[i], &codepoint))
         {
             // Encode the code point to UTF-8
-            out_char_size[i] = codepoint_to_utf8(codepoint, (uint8_t*)(&out_char[i]), sizeof(out_char[i]));
+            out_char_size[i] = codepoint_to_utf8(codepoint, &out_char[i]);
         }
         else
         {

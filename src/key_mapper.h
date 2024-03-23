@@ -39,9 +39,8 @@ bool get_xmodmap_keysym(
 // Encode an Unicode value into an UTF-8 byte sequence (at most 4 bytes in total)
 // Function returns the amount of bytes written to `*output`,
 // with `output_size` being the buffer size.
-// (a return value of zero means that the input is not a valid code point
-//  or that there was not enough space in the buffer)
-size_t codepoint_to_utf8(uint32_t codepoint, uint8_t* output, size_t output_size);
+// (a return value of zero means that the input is not a valid code point)
+size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output);
 
 // Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)
 // Each of the arrays for storing the characters  and their sizes must have at least
