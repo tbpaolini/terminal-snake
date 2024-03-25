@@ -11,7 +11,62 @@
 
 #ifdef _WIN32
 
-// TO DO: Handling scan codes on Windows...
+/*
+    Windows provides functions to convert a scan code to a virtual key, then a virtual key to an Unicode character.
+    So the proccess of mapping a scan code to a key is pretty much straightfoward.
+*/
+
+// Take an array of scancode values and output an array of the corresponding UTF-16 characters (lowercase and uppercase)
+// Each of the arrays for storing the characters  and their sizes must have at least
+// twice the amount of elements than the scancode array. An size of zero for the
+// output character means that conversion failed for the corresponding scancode.
+// Function returns `true` if all pointers are not NULL and the sizes are big enough, otherwise returns `false`.
+bool scancodes_to_utf16(
+    const uint32_t *restrict in_scancode,   // Array of scancode values
+    size_t in_count,                        // Amount of elements in the scancode array
+    utf16_char_t *restrict out_char,        // Array to store the characters encoded in UTF-16
+    uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
+    size_t out_count                        // Amount of elements in each of the two output arrays
+)
+{
+    // Check if all the arguments are valid
+    if (!in_scancode || !out_char || !out_char_size || in_count == 0 || out_count < 2 * in_count)
+    {
+        return false;
+    }
+    
+    // Each UTF-16 character can have up two 16-bit values
+    static const size_t utf16_size = sizeof(utf16_char_t) / sizeof(uint16_t);
+
+    // Keyboard's state array
+    BYTE kb_state[256] = {0};
+
+    // Current index on the output arrays
+    size_t pos = 0;
+
+    for (size_t i = 0; i < in_count; i++)
+    {
+        // Get the virtual key corresponding to the scan code
+        UINT key = MapVirtualKeyA(in_scancode[i], MAPVK_VSC_TO_VK);
+        
+        // Flag the Shift key as "not pressed" to get the lowercase version of the character
+        kb_state[VK_SHIFT] = 0x00;
+        int count = ToUnicode(key, in_scancode[i], kb_state, &(out_char[pos][0]), utf16_size, 0x04);
+        out_char_size[pos++] = (count > 0) ? (count * 2) : 0;
+
+        // Flag the Shift key as "pressed" to get the uppercase version of the character
+        kb_state[VK_SHIFT] = 0x80;
+        count = ToUnicode(key, in_scancode[i], kb_state, &(out_char[pos][0]), utf16_size, 0x04);
+        out_char_size[pos++] = (count > 0) ? (count * 2) : 0;
+
+        /* Note:
+            A value of 4 as the last argument of `ToUnicode()` makes
+            the state of the physical keyboard to not change.
+        */
+    }
+    
+    return true;
+}
 
 #else
 
