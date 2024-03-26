@@ -16,15 +16,15 @@
     So the proccess of mapping a scan code to a key is pretty much straightfoward.
 */
 
-// Take an array of scancode values and output an array of the corresponding UTF-16 characters (lowercase and uppercase)
+// Take an array of scancode values and output an array of the corresponding multibyte characters (lowercase and uppercase)
 // Each of the arrays for storing the characters  and their sizes must have at least
 // twice the amount of elements than the scancode array. An size of zero for the
 // output character means that conversion failed for the corresponding scancode.
 // Function returns `true` if all pointers are not NULL and the sizes are big enough, otherwise returns `false`.
-bool scancodes_to_utf16(
+bool scancodes_to_mbchar(
     const uint32_t *restrict in_scancode,   // Array of scancode values
     size_t in_count,                        // Amount of elements in the scancode array
-    utf16_char_t *restrict out_char,        // Array to store the characters encoded in UTF-16
+    CharBuffer *restrict out_char,          // Array to store the characters encoded in the console's code page
     uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
     size_t out_count                        // Amount of elements in each of the two output arrays
 )
@@ -34,9 +34,9 @@ bool scancodes_to_utf16(
     {
         return false;
     }
-    
-    // Each UTF-16 character can have up two 16-bit values
-    static const size_t utf16_size = sizeof(utf16_char_t) / sizeof(uint16_t);
+
+    // Console's code page
+    int con_cp = GetConsoleCP();
 
     // Keyboard's state array
     BYTE kb_state[256] = {0};
@@ -44,20 +44,27 @@ bool scancodes_to_utf16(
     // Current index on the output arrays
     size_t pos = 0;
 
+    // Convert each scan code to a multibyte character encoded in the console's code page
     for (size_t i = 0; i < in_count; i++)
     {
+        // Buffer for UTF-16 characters
+        uint16_t utf16_buf[4] = {0};
+        const size_t buf_size = sizeof(utf16_buf) / sizeof(utf16_buf[0]);
+        
         // Get the virtual key corresponding to the scan code
         UINT key = MapVirtualKeyA(in_scancode[i], MAPVK_VSC_TO_VK);
         
         // Flag the Shift key as "not pressed" to get the lowercase version of the character
         kb_state[VK_SHIFT] = 0x00;
-        int count = ToUnicode(key, in_scancode[i], kb_state, &(out_char[pos][0]), utf16_size, 0x04);
-        out_char_size[pos++] = (count > 0) ? (count * 2) : 0;
+        int count_u16 = ToUnicode(key, in_scancode[i], kb_state, utf16_buf, buf_size, 0x04);
+        int count_u8 = WideCharToMultiByte(con_cp, 0, utf16_buf, count_u16, out_char[pos], CHARBUFFER_SIZE, NULL, NULL);
+        out_char_size[pos++] = count_u8;
 
         // Flag the Shift key as "pressed" to get the uppercase version of the character
         kb_state[VK_SHIFT] = 0x80;
-        count = ToUnicode(key, in_scancode[i], kb_state, &(out_char[pos][0]), utf16_size, 0x04);
-        out_char_size[pos++] = (count > 0) ? (count * 2) : 0;
+        count_u16 = ToUnicode(key, in_scancode[i], kb_state, utf16_buf, buf_size, 0x04);
+        count_u8 = WideCharToMultiByte(con_cp, 0, utf16_buf, count_u16, out_char[pos], CHARBUFFER_SIZE, NULL, NULL);
+        out_char_size[pos++] = count_u8;
 
         /* Note:
             A value of 4 as the last argument of `ToUnicode()` makes

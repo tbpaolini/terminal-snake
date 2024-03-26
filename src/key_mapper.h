@@ -18,18 +18,15 @@ typedef uint8_t CharBuffer[CHARBUFFER_SIZE];
 
 #ifdef _WIN32
 
-// Sequence of two 16-bit values for storing a characer encoded in UTF-16
-typedef uint16_t utf16_char_t[2];
-
-// Take an array of scancode values and output an array of the corresponding UTF-16 characters (lowercase and uppercase)
+// Take an array of scancode values and output an array of the corresponding multibyte characters (lowercase and uppercase)
 // Each of the arrays for storing the characters  and their sizes must have at least
 // twice the amount of elements than the scancode array. An size of zero for the
 // output character means that conversion failed for the corresponding scancode.
 // Function returns `true` if all pointers are not NULL and the sizes are big enough, otherwise returns `false`.
-bool scancodes_to_utf16(
+bool scancodes_to_mbchar(
     const uint32_t *restrict in_scancode,   // Array of scancode values
     size_t in_count,                        // Amount of elements in the scancode array
-    utf16_char_t *restrict out_char,        // Array to store the characters encoded in UTF-16
+    CharBuffer *restrict out_char,          // Array to store the characters encoded in the console's code page
     uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
     size_t out_count                        // Amount of elements in each of the two output arrays
 );
