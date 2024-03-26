@@ -11,6 +11,11 @@
 
 #include "includes.h"
 
+#define CHARBUFFER_SIZE (8)
+
+// Sequence of 8 bytes for stroring an encoded character
+typedef uint8_t CharBuffer[CHARBUFFER_SIZE];
+
 #ifdef _WIN32
 
 // Sequence of two 16-bit values for storing a characer encoded in UTF-16
@@ -30,9 +35,6 @@ bool scancodes_to_utf16(
 );
 
 #else
-
-// Sequence of 4 bytes for stroring a character encoded in UTF-8
-typedef uint8_t utf8_char_t[4];
 
 // Convert a keysym to the code point of its character on the Unicode table
 // If successful, return 'true' and write the value to '*codepoint'. Otherwise, return 'false'.
@@ -54,7 +56,7 @@ bool get_xmodmap_keysym(
 // Function returns the amount of bytes written to `*output`,
 // with `output_size` being the buffer size.
 // (a return value of zero means that the input is not a valid code point)
-size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output);
+size_t codepoint_to_utf8(uint32_t codepoint, CharBuffer* output);
 
 // Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)
 // Each of the arrays for storing the characters  and their sizes must have at least
@@ -64,7 +66,7 @@ size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output);
 bool scancodes_to_utf8(
     const uint32_t *restrict in_scancode,   // Array of scancode values
     size_t in_count,                        // Amount of elements in the scancode array
-    utf8_char_t *restrict out_char,         // Array to store the characters encoded in UTF-8
+    CharBuffer *restrict out_char,          // Array to store the characters encoded in UTF-8
     uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
     size_t out_count                        // Amount of elements in each of the two output arrays
 );

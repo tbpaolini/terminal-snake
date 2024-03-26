@@ -1049,7 +1049,7 @@ bool get_xmodmap_keysym(
 // Function returns the amount of bytes written to `*output`,
 // with `output_size` being the buffer size.
 // (a return value of zero means that the input is not a valid code point)
-size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output)
+size_t codepoint_to_utf8(uint32_t codepoint, CharBuffer* output)
 {
     // Leading byte for sequences of 2 to 4 bytes
     static const uint32_t lead_2 = 0xC0; // 110xxxxx
@@ -1103,7 +1103,7 @@ size_t codepoint_to_utf8(uint32_t codepoint, utf8_char_t* output)
 bool scancodes_to_utf8(
     const uint32_t *restrict in_scancode,   // Array of scancode values
     size_t in_count,                        // Amount of elements in the scancode array
-    utf8_char_t *restrict out_char,         // Array to store the characters encoded in UTF-8
+    CharBuffer *restrict out_char,          // Array to store the characters encoded in UTF-8
     uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
     size_t out_count                        // Amount of elements in each of the two output arrays
 )
