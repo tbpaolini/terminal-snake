@@ -88,7 +88,16 @@ KeyMap* map_scancodes(uint32_t up, uint32_t left, uint32_t down, uint32_t right)
 // Free the memory of a KeyMap object
 void map_destroy(KeyMap* data)
 {
+    if (!data) return;
+    
+    const size_t size = sizeof(data->next) / sizeof(data->next[0]);
+    for (size_t i = 0; i < size; i++)
+    {
+        // Recursively free all child nodes
+        map_destroy(data->next[i]);
+    }
 
+    free(data);
 }
 
 #ifdef _WIN32
