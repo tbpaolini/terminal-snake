@@ -1225,6 +1225,9 @@ bool scancodes_to_utf8(
     // Convert each key symbol to an UTF-8 string
     for (size_t i = 0; i < out_count; i++)
     {
+        // Check if the keyboard has the corresponding character
+        if (!keysym[i]) continue;
+        
         // Get the character's code point
         uint32_t codepoint = 0;
         if (keysym_to_codepoint(keysym[i], &codepoint))
