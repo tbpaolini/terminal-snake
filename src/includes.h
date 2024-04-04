@@ -50,3 +50,4 @@
 #define ERR_TINY_TERMINAL -2    // Terminal window is too small for the game
 #define ERR_ARRAY_OVERFLOW -3   // Tried to access an out-of-bounds coordinate
 #define ERR_INVALID_ARGS -4     // Incorrect command line arguments passed to the program
+#define ERR_KEYMAP_FAIL -5      // Failed to map the keyboard characters to the movement directions

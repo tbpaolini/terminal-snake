@@ -93,6 +93,13 @@ GameState* game_init(unsigned int speed)
 
     #endif // _WIN_32
 
+    // Map the directions to the "WASD" equivalent keys of the current keyboard layout
+    state->keymap = map_scancodes(SCANCODE_UP, SCANCODE_LEFT, SCANCODE_DOWN, SCANCODE_RIGHT);
+    if (!state->keymap)
+    {
+        printf_error_exit(ERR_KEYMAP_FAIL, "Failed to map the keyboard keys.");
+    }
+
     // Distance from the borders of the window in which the snake may not spawn
     const size_t safety_distance = SCREEN_MARGIN + SNAKE_START_SIZE + 1;
     const size_t size_cutoff = 2 * safety_distance;
@@ -424,6 +431,7 @@ void game_close(GameState* state)
     
     // Reset the terminal's properties to the original and free the allocated memory
     cleanup();
+    map_destroy(state->keymap);
     free(state->arena);
     free(state->snake);
     free(state);

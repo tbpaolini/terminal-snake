@@ -9,8 +9,15 @@
 #define SNAKE_ACCEL_FACTOR 2    // Snake's speed is multiplied by this value when pressing the direction the snake is facing
 #define SLEEP_MARGIN 15000  // Program wakes up this amount of microseconds before the start of the next frame
 
+// Keyboard's scan codes to be mapped to a direction
+#define SCANCODE_UP    17   // `W` key when on a QWERTY keyboard
+#define SCANCODE_LEFT  30   // `A` key when on a QWERTY keyboard
+#define SCANCODE_DOWN  31   // `S` key when on a QWERTY keyboard
+#define SCANCODE_RIGHT 32   // `D` key when on a QWERTY keyboard
+
 typedef struct GameState GameState;
 typedef struct GameCoord GameCoord;
+typedef struct KeyMap KeyMap;
 typedef enum SnakeDirection {DIR_NONE=0, DIR_UP, DIR_DOWN, DIR_RIGHT, DIR_LEFT} SnakeDirection;
 
 // Coordinates on the terminal
@@ -27,6 +34,7 @@ struct GameState
 {
     bool **arena;               // (2D array) Collision grid for the game area ('true' means a occupied space)
     GameCoord *snake;           // (double-ended queue) Coordinates of the screen where the snake parts are being drawn
+    KeyMap *keymap;             // Character keys mapped to the directions (can be used in addition to the arrow keys)
     size_t head;                // Index of .snake[] where the head is
     size_t tail;                // Index of .snake[] where the tail is
     size_t size;                // Current size of the snake
