@@ -17,7 +17,72 @@
 // Note 3: the returned key map should be freed with `map_destroy()`.
 KeyMap* map_scancodes(uint32_t up, uint32_t left, uint32_t down, uint32_t right)
 {
+    const SnakeDirection dir[4] = {DIR_UP, DIR_LEFT, DIR_DOWN, DIR_RIGHT};
+    const uint32_t scancodes[4] = {up, left, down, right};
+    const size_t in_count = sizeof(scancodes) / sizeof(scancodes[0]);
     
+    // Amount of characters being mapped
+    // (it is 8 because we are mapping both the lowercase
+    //  and the uppercase versions of the 4 characters)
+    const size_t out_count = (sizeof(scancodes) / sizeof(scancodes[0]) * 2);
+
+    CharBuffer chars[8] = {0};  // Sequence of bytes in the current encoding for each character
+    uint8_t char_size[8] = {0}; // Amount of bytes in the sequence for each character
+
+    #ifdef _WIN32
+    const bool success = scancodes_to_mbchar(scancodes, in_count, chars, char_size, out_count);
+    #else
+    const bool success = scancodes_to_utf8(scancodes, in_count, chars, char_size, out_count);
+    #endif // _WIN32
+
+    // Storage for the characters mapped to the directions
+    KeyMap* keymap = xmalloc(sizeof(KeyMap));
+
+    // Default characters in case we fail to map the scan code
+    const char default_chars[8] = {'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'};
+
+    // Loop over all the characters
+    for (size_t i = 0; i < out_count; i++)
+    {
+        KeyMap *node = keymap;  // Start from the root of the trie
+        size_t size = char_size[i]; // Size in bytes of the current character
+
+        // Set the character to the default value if we failed to map the scan code
+        if (!success || size == 0)
+        {
+            chars[i][0] = default_chars[i];
+            size = 1;
+        }
+
+        // Loop over all the bytes of the character
+        for (size_t j = 0; j < size; j++)
+        {
+            // Get the current byte on the sequence
+            const uint8_t byte = chars[i][j];
+            
+            // Create the next node on the trie if the node does not already exist
+            if (!node->next[byte])
+            {
+                node->next[byte] = xmalloc(sizeof(KeyMap));
+            }
+
+            // Move to the next node
+            node = node->next[byte];
+            
+            // Store the corresponding direction if we are at the last byte of the sequence
+            // Note: each direction corresponds to two characters (the lowercase and uppercase versions of the key)
+            if (j == size - 1)
+            {
+                node->dir = dir[i/2];
+            }
+            else
+            {
+                node->dir = DIR_NONE;
+            }
+        }
+    }
+
+    return keymap;
 }
 
 // Free the memory of a KeyMap object
@@ -44,7 +109,7 @@ bool scancodes_to_mbchar(
     CharBuffer *restrict out_char,          // Array to store the characters encoded in the console's code page
     uint8_t *restrict out_char_size,        // Array to store the sizes in bytes of each encoded character
     size_t out_count                        // Amount of elements in each of the two output arrays
-)
+) 
 {
     // Check if all the arguments are valid
     if (!in_scancode || !out_char || !out_char_size || in_count == 0 || out_count < 2 * in_count)

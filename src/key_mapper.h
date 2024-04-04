@@ -21,7 +21,7 @@ typedef uint8_t CharBuffer[CHARBUFFER_SIZE];
 // on the current keyboard layout, then stored in this data structure.
 typedef struct KeyMap{
     SnakeDirection dir; // Direction (DIR_NONE if we aren't on a terminator node, otherwise it stores the mapped direction)
-    struct KeyMap* byte[256];   // Pointer to the next node of the trie (the index is the next byte on the sequence)
+    struct KeyMap* next[256];   // Pointer to the next node of the trie (the index is the next byte on the sequence)
 } KeyMap;
 
 // Map scan codes from the keyboard to directions
