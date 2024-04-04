@@ -16,6 +16,27 @@
 // Sequence of 8 bytes for stroring an encoded character
 typedef uint8_t CharBuffer[CHARBUFFER_SIZE];
 
+// A trie (prefix tree) for holding the byte sequences of the mapped keyboard keys
+// The scan codes are going to be converted to their corresponding byte sequences
+// on the current keyboard layout, then stored in this data structure.
+typedef struct KeyMap{
+    SnakeDirection dir; // Direction (DIR_NONE if we aren't on a terminator node, otherwise it stores the mapped direction)
+    struct KeyMap* byte[256];   // Pointer to the next node of the trie (the index is the next byte on the sequence)
+} KeyMap;
+
+// Map scan codes from the keyboard to directions
+// The use of this function is to map physical keys in an way that it is independent of the keyboard layout.
+// The scan codes for the WASD keys of a QWERTY keyboard are (respectively): 17, 30, 31, 32.
+// Note 1: if this function fails to map a key, then it defaults to map the corresponding WASD character for that key.
+// Note 2: the arrow keys are hardcoded and won't me remapped by this function.
+// Note 3: the returned key map should be freed with `map_destroy()`.
+KeyMap* map_scancodes(uint32_t up, uint32_t left, uint32_t down, uint32_t right);
+
+// Free the memory of a KeyMap object
+void map_destroy(KeyMap* data);
+
+/***** OS specific functions *****/
+
 #ifdef _WIN32
 
 // Take an array of scancode values and output an array of the corresponding multibyte characters (lowercase and uppercase)

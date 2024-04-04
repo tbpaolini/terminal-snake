@@ -9,6 +9,23 @@
 
 #include "includes.h"
 
+// Map scan codes from the keyboard to directions
+// The use of this function is to map physical keys in an way that it is independent of the keyboard layout.
+// The scan codes for the WASD keys of a QWERTY keyboard are (respectively): 17, 30, 31, 32.
+// Note 1: if this function fails to map a key, then it defaults to map the corresponding WASD character for that key.
+// Note 2: the arrow keys are hardcoded and won't me remapped by this function.
+// Note 3: the returned key map should be freed with `map_destroy()`.
+KeyMap* map_scancodes(uint32_t up, uint32_t left, uint32_t down, uint32_t right)
+{
+    
+}
+
+// Free the memory of a KeyMap object
+void map_destroy(KeyMap* data)
+{
+
+}
+
 #ifdef _WIN32
 
 /*
