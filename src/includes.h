@@ -33,6 +33,9 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <sys/select.h>
+#include <fcntl.h>
+#include <linux/uinput.h>
+#include <linux/input.h>
 
 #endif // _WIN_32
 

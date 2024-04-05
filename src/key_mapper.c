@@ -32,7 +32,11 @@ KeyMap* map_scancodes(uint32_t up, uint32_t left, uint32_t down, uint32_t right)
     #ifdef _WIN32
     const bool success = scancodes_to_mbchar(scancodes, in_count, chars, char_size, out_count);
     #else
-    const bool success = scancodes_to_utf8(scancodes, in_count, chars, char_size, out_count);
+    bool success = scancodes_to_utf8(scancodes, in_count, chars, char_size, out_count);
+    if (!success)
+    {
+        success = get_uinput_chars(scancodes, in_count, chars, char_size, out_count);
+    }
     #endif // _WIN32
 
     // Storage for the characters mapped to the directions
@@ -1191,6 +1195,109 @@ size_t codepoint_to_utf8(uint32_t codepoint, CharBuffer* output)
     {
         return 0;
     }
+}
+
+// Send through uinput the scancode of a key with either the Shift pressed together or not
+static void send_scancode(int uinput_fd, uint32_t scancode, bool shift_pressed)
+{
+    // Character key
+    struct input_event char_key = {
+        .type = EV_KEY,
+        .code = scancode,
+        .value = 1, // 1 = key pressed
+    };
+
+    // Left shift key
+    struct input_event shift_key = {
+        .type = EV_KEY,
+        .code = KEY_LEFTSHIFT,
+        .value = 1,
+    };
+
+    // Input synchronization
+    struct input_event syn = {
+        .type = EV_SYN,
+        .code = SYN_REPORT,
+        .value = 0,
+    };
+
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-result"
+
+    // Send the Shift and Char key press
+    if (shift_pressed) write(uinput_fd, &shift_key, sizeof(shift_key));
+    write(uinput_fd, &char_key, sizeof(char_key));
+    
+    // Send the Shift and Char key release
+    shift_key.value = 0;
+    char_key.value = 0;
+    write(uinput_fd, &char_key, sizeof(char_key));
+    if (shift_pressed) write(uinput_fd, &shift_key, sizeof(shift_key));
+
+    // Send the input synchronization event
+    write(uinput_fd, &syn, sizeof(syn));
+
+    #pragma GCC diagnostic pop
+}
+
+// Get the sequence of bytes emitted when the given scancodes are sent, using the uinput module
+// This is an alternative strategy for getting the characters associated to scancodes,
+// to be used in case xmodmap fails. However the program needs elevated privileges in order to use uinput.
+// The circumnstances that this function is needed are expected to be quite rare,
+// and I (the author) do not want to ask people to run the program with sudo.
+// So I am letting this as a semi-hidden undocumented feature:
+// in case the system does not have xmodmap, just run the game with sudo to get the character keys mapped.
+bool get_uinput_chars(
+    const uint32_t *restrict in_scancode, size_t in_count,
+    CharBuffer *restrict out_chars, uint8_t *restrict out_char_size, size_t out_count
+)
+{
+    if (!in_scancode || !out_chars || out_count < in_count * 2) return false;
+
+    // Create an uinput device
+    int uinput = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+    if (uinput < 0) return false;
+    
+    ioctl(uinput, UI_SET_EVBIT, EV_KEY);
+    ioctl(uinput, UI_SET_KEYBIT, KEY_LEFTSHIFT);
+    
+    for (size_t i = 0; i < in_count; i++)
+    {
+        ioctl(uinput, UI_SET_KEYBIT, (int)in_scancode[i]);
+    }
+
+    struct uinput_setup usetup = {
+        .id.bustype = BUS_USB,
+        .id.vendor = 0xFEED,
+        .id.product = 0xBEEF,
+        .id.version = 1,
+        .name = "Snake Game",
+    };
+
+    ioctl(uinput, UI_DEV_SETUP, &usetup);
+    ioctl(uinput, UI_DEV_CREATE);
+
+    // Give the system some time to create the uinput device
+    usleep(500000);
+
+    size_t pos = 0; // Current index on both output arrays
+    for (size_t i = 0; i < in_count; i++)
+    {
+        // Send the scancode with the Shift key not pressed, then read the standard input
+        send_scancode(uinput, in_scancode[i], false);
+        out_char_size[pos] = read(STDIN_FILENO, out_chars[pos], sizeof(CharBuffer));
+        pos++;
+
+        // Send the scancode with the Shift key pressed, then read the standard input
+        send_scancode(uinput, in_scancode[i], true);
+        out_char_size[pos] = read(STDIN_FILENO, out_chars[pos], sizeof(CharBuffer));
+        pos++;
+    }
+    
+    // Destroy the uinput device
+    ioctl(uinput, UI_DEV_DESTROY);
+    close(uinput);
+    return true;
 }
 
 // Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)

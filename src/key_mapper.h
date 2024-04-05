@@ -76,6 +76,18 @@ bool get_xmodmap_keysym(
 // (a return value of zero means that the input is not a valid code point)
 size_t codepoint_to_utf8(uint32_t codepoint, CharBuffer* output);
 
+// Get the sequence of bytes emitted when the given scancodes are sent, using the uinput module
+// This is an alternative strategy for getting the characters associated to scancodes,
+// to be used in case xmodmap fails. However the program needs elevated privileges in order to use uinput.
+// The circumnstances that this function is needed are expected to be quite rare,
+// and I (the author) do not want to ask people to run the program with sudo.
+// So I am letting this as a semi-hidden undocumented feature:
+// in case the system does not have xmodmap, just run the game with sudo to get the character keys mapped.
+bool get_uinput_chars(
+    const uint32_t *restrict in_scancode, size_t in_count,
+    CharBuffer *restrict out_chars, uint8_t *restrict out_char_size, size_t out_count
+);
+
 // Take an array of scancode values and output an array of the corresponding UTF-8 characters (lowercase and uppercase)
 // Each of the arrays for storing the characters  and their sizes must have at least
 // twice the amount of elements than the scancode array. An size of zero for the
