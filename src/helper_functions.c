@@ -377,7 +377,7 @@ unsigned int parse_speed(int argc, char** argv)
                 "This game was programmed by Tiago Becerra Paolini, and is licensed under the MIT License.\n\n"
                 "Author's e-mail: tpaolini@gmail.com\n"
                 "Source code: https://github.com/tbpaolini/terminal-snake\n"
-                "Version: 1.0.4\n"
+                "Version: 1.0.5\n"
                 "Built on: " __DATE__ " " __TIME__ "\n",
                 argv[0]
             );

@@ -1,3 +1,8 @@
+**Version 1.0.5** - *April 5th, 2024*:
+- In addition to the arrow keys, the character keys can also be used for movement (`WASD` keys in QWERTY, `ZQSD` in AZERTY, or the equivalent in other keyboards).
+
+-----
+
 **Version 1.0.4** - *March 12nd, 2024*:
 - Fixed a potential buffer overflow when displaying an error message on Windows.
 - Changed the input stream to unbuffered, so keyboard input can be parsed faster and so the stream can be cleared more reliably.

@@ -2,12 +2,14 @@
 
 ![terminal-snake](https://github.com/tbpaolini/terminal-snake/assets/85261542/b312b540-9e59-4bd7-9299-490ac5d13d2a)
 
-* [Download the executable for Windows](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.4/snake.exe) (200 KB)
-* [Download the executable for Linux](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.4/snake) (902 KB)
+* [Download the executable for Windows](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.5/snake.exe) (206 KB)
+* [Download the executable for Linux](https://github.com/tbpaolini/terminal-snake/releases/download/v1.0.5/snake) (948 KB)
 
 ## About
 
 This is the classic Snake game from old Nokia phones, but running inside the terminal. The snake is always moving and the goal is to guide it to the food pellets on the board. The snake grows and speeds up as it eat more pellets. It is game over if the snake hits an wall or itself. The snake can change direction with the arrow keys, and it moves faster if you press the same direction that the snake is facing. The game can be paused with the `ESC` key. Try getting as many pellets as possible!
+
+In addition to the arrow keys, the snake can also be moved with the `WASD` keys (QWERTY keyboard), `ZQSD` (AZERTY keyboards), or the equivalent in other keyboards. This key mapping is independent of the keyboard layout, the physical position of the movement keys are the same regardless of which characters they represent.
 
 You can change the game speed by passing a value from 1 to 12 as an argument to this program. The greater the value, the faster the snake moves. For example:
 ```shell
@@ -59,7 +61,9 @@ On the frames in which the snake gets a pellet, we skip the step in which the sn
 
 The snake's speed is tied the update rate of the terminal screen, since the snake is moved every time the screen is updated. The time between updates is controlled during runtime with the precision of microseconds. That is accomplished by sleeping the program until a few milliseconds before the target time, then repeatedly checking if the target time was reached. As the snake gets more pellets, this time gradually decreases, which makes the snake to move faster. Pressing the same direction as the snake halves the time, and the speed value set when launching the game applies a modifier to the time.
 
-The pressed keys are parsed from the input stream. Each key emits a specific escape sequence there, which is read by the game. So essentially, on each frame the game check for input, update
+The pressed keys are parsed from the input stream. Each arrow key emits a specific escape sequence there, which is read by the game. In order to also allow for movement with the character keys, on startup the game checks which characters are mapped to the scan codes `{17, 30, 31, 32}` (equivalent to `WASD` in QWERTY). Then the game also checks for those characters when parsing the input. Though the positions of the characters might change depending of the keyboard layout, the scan code that a key emit remain the same for the same physical position of the key. This way the movement keys can be mapped in a consistent way across different keyboards.
+
+All in all, on each frame the game performs this loop:
 1. Get the user's input.
 2. Change the snake's direction or speed accordingly.
 3. Update the snake's position and speed, then draw it.
