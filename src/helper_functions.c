@@ -413,7 +413,7 @@ void debug_keys()
 {
     while (true)
     {
-        SnakeDirection dir = parse_input();
+        SnakeDirection dir = parse_input(state_ptr);
         switch (dir)
         {
             case DIR_UP:
@@ -447,7 +447,7 @@ void debug_movement()
 {
     while (true)
     {
-        SnakeDirection dir = parse_input();
+        SnakeDirection dir = parse_input(state_ptr);
         if (dir)
         {
             move_snake(state_ptr, dir);

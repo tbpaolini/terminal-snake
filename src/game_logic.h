@@ -6,7 +6,7 @@
 void spawn_food(GameState *state);
 
 // Get which direction the user has pressed
-SnakeDirection parse_input();
+SnakeDirection parse_input(GameState* state);
 
 // Move the snake by one unit in a given direction
 // Return 'true' if the snake has collided with something, 'false' otherwise.

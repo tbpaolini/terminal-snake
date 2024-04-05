@@ -380,7 +380,7 @@ void game_mainloop(GameState* state)
         const uint64_t start_time = clock_usec();
         
         // Get which direction key the user has pressed
-        SnakeDirection dir = parse_input();
+        SnakeDirection dir = parse_input(state);
 
         // The snake accelerates if the user has pressed the same direction the snake is moving
         const bool accelerate = (dir == state->direction);

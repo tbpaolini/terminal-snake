@@ -74,7 +74,7 @@ void spawn_food(GameState *state)
 }
 
 // Get which direction the user has pressed
-SnakeDirection parse_input()
+SnakeDirection parse_input(GameState* state)
 {
     SnakeDirection dir = DIR_NONE;
     
@@ -85,37 +85,71 @@ SnakeDirection parse_input()
         
         // Keep reading the input stream until we find the sequence "ESC O"
         // (ESC character followed by the letter O character)
-        if (my_char != '\x1b') continue;
-        my_char = getchar();
-        if (my_char != 'O') continue;
-        my_char = getchar();
-
-        /* Note: The program locks waiting for input in case the user press the ESC key.
-           This was an oversight on the above code, but I am keeping it as a "pause" feature
-           because I really liked it :-)
-        */
-
-        // The next character after the sequence tells us which direction was pressed
-        switch (my_char)
+        // Or a sequence that is in the `state->keymap` trie
+        
+        if (my_char == '\x1b')  // Check if an arrow key was pressed
         {
-            case 'A':
-                dir = DIR_UP;
-                goto parsing_done;
+            my_char = getchar();
+            if (my_char != 'O') continue;
+            my_char = getchar();
+
+            /* Note: The program locks waiting for input in case the user press the ESC key.
+            This was an oversight on the above code, but I am keeping it as a "pause" feature
+            because I really liked it :-)
+            */
+
+            // The next character after the sequence tells us which direction was pressed
+            switch (my_char)
+            {
+                case 'A':
+                    dir = DIR_UP;
+                    goto parsing_done;
+                
+                case 'B':
+                    dir = DIR_DOWN;
+                    goto parsing_done;
+                
+                case 'C':
+                    dir = DIR_RIGHT;
+                    goto parsing_done;
+                
+                case 'D':
+                    dir = DIR_LEFT;
+                    goto parsing_done;
+                
+                default:
+                    continue;
+            }
+        }
+        else if (state && state->keymap)    // Check if a mapped character key was pressed
+        {
+            if (my_char < 0 || my_char > 255) continue;
+            KeyMap *node = state->keymap->next[my_char];    // Start from the trie's root
             
-            case 'B':
-                dir = DIR_DOWN;
-                goto parsing_done;
-            
-            case 'C':
-                dir = DIR_RIGHT;
-                goto parsing_done;
-            
-            case 'D':
-                dir = DIR_LEFT;
-                goto parsing_done;
-            
-            default:
-                continue;
+            // Check if the byte sequence match any of the sequences in `state->keymap`
+            while (node != NULL)
+            {
+                if (node->dir != DIR_NONE)
+                {
+                    // The byte sequence was found
+                    dir = node->dir;
+                    goto parsing_done;
+                }
+                else
+                {
+                    // Get the next byte in the sequence
+                    my_char = getchar();
+                    if (my_char >= 0 && my_char <= 255)
+                    {
+                        // Move to the trie's next node
+                        node = node->next[my_char];
+                    }
+                    else
+                    {
+                        node = NULL;
+                    }
+                }
+            }
         }
     }
     
